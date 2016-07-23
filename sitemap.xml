@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2016/07/23/event-js/</loc>
+    
+    <lastmod>2016-07-23T04:10:59.840Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2016/07/23/angular-function/</loc>
+    
+    <lastmod>2016-07-23T04:09:43.466Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2016/07/21/hello-world/</loc>
     
     <lastmod>2016-07-21T07:46:35.143Z</lastmod>
