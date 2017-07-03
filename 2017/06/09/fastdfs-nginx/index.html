@@ -1,0 +1,783 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="nginx,fastdfs,fdfs," />
+
+
+
+
+  
+
+
+  <link rel="alternate" href="/atom.xml" title="前端·禁地" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="FastDFS是一个开源的轻量级分布式文件系统，它对文件进行管理，解决了大容量存储和负载均衡的问题。特别适合以文件为载体的在线服务，如相册网站、视频网站等等。">
+<meta name="keywords" content="nginx,fastdfs,fdfs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="农民进城之初尝FastDFS搭建图片分布式系统">
+<meta property="og:url" content="http://blog.leungjz.top/2017/06/09/fastdfs-nginx/index.html">
+<meta property="og:site_name" content="前端·禁地">
+<meta property="og:description" content="FastDFS是一个开源的轻量级分布式文件系统，它对文件进行管理，解决了大容量存储和负载均衡的问题。特别适合以文件为载体的在线服务，如相册网站、视频网站等等。">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/1.attachement-storage.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/2.lib-install.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/3.fdfs-install.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/4.tracker-conf.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/5.nginx-install.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/5.nginx-version.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/6-result.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/7.php-install-module.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/8.php-upload%20.png">
+<meta property="og:updated_time" content="2017-07-03T15:26:10.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="农民进城之初尝FastDFS搭建图片分布式系统">
+<meta name="twitter:description" content="FastDFS是一个开源的轻量级分布式文件系统，它对文件进行管理，解决了大容量存储和负载均衡的问题。特别适合以文件为载体的在线服务，如相册网站、视频网站等等。">
+<meta name="twitter:image" content="http://ojrkbauy9.bkt.clouddn.com/1.attachement-storage.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.leungjz.top/2017/06/09/fastdfs-nginx/"/>
+
+
+
+
+
+  <title> 农民进城之初尝FastDFS搭建图片分布式系统 | 前端·禁地 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端·禁地</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-github">
+          <a href="https://github.com/JZLeung" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github"></i> <br />
+            
+            GitHub
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.leungjz.top/2017/06/09/fastdfs-nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="梁生、">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端·禁地">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                农民进城之初尝FastDFS搭建图片分布式系统
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-06-09T16:19:51+08:00">
+                2017-06-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>FastDFS是一个开源的轻量级分布式文件系统，它对文件进行管理，解决了大容量存储和负载均衡的问题。特别适合以文件为载体的在线服务，如相册网站、视频网站等等。<br><a id="more"></a><br>于前不久，公司论坛的图片终于将服务器给挤爆了，已经达到了恐怖的34G，服务器总容量才40G。如果直接加硬盘的话，那么discuz中的逻辑几乎就要全改，所以不行。如果将所有图片扔到对象存储的话，那么这会是一大笔支出（虽然钱不是我出），所以还是不行。没办法，只能自己来弄个图片服务器。<br><img src="http://ojrkbauy9.bkt.clouddn.com/1.attachement-storage.png" alt="附件容量"></p>
+<h2 id="为什么选择-FastDFS"><a href="#为什么选择-FastDFS" class="headerlink" title="为什么选择 FastDFS"></a>为什么选择 FastDFS</h2><blockquote>
+<p>FastDFS是一个开源的轻量级分布式文件系统，它对文件进行管理，功能包括：文件存储、文件同步、文件访问（文件上传、文件下载）等，解决了大容量存储和负载均衡的问题。特别适合以文件为载体的在线服务，如相册网站、视频网站等等。</p>
+</blockquote>
+<p>最重要的是：<strong>当存储空间不足或即将耗尽时，可以动态添加卷。只需要增加一台或多台服务器，并将它们配置为一个新的卷，这样就扩大了存储系统的容量。</strong>这样的话，如果服务器上挂的硬盘满了，只需要添加硬盘，再修改一下配置即可继续使用。</p>
+<h2 id="安装-FastDFS"><a href="#安装-FastDFS" class="headerlink" title="安装 FastDFS"></a>安装 FastDFS</h2><ol>
+<li><p>下载并安装 FastDFS 依赖包 libfastcommon<br>下载可以到 <a href="https://github.com/happyfish100/libfastcommon/archive/master.zip" target="_blank" rel="external">这里</a> 直接下载再 scp 复制到服务器上。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:/home/leung<span class="comment"># unzip libfastcommon-master.zip</span></div><div class="line">root@ubuntu:/home/leung<span class="comment"># cd libfastcommon-master</span></div><div class="line">root@ubuntu:/home/leung<span class="comment"># ./make.sh</span></div><div class="line">root@ubuntu:/home/leung<span class="comment"># ./make.sh install</span></div></pre></td></tr></table></figure>
+<p>安装完成如下图：<br><img src="http://ojrkbauy9.bkt.clouddn.com/2.lib-install.png" alt="安装依赖完成"></p>
+</li>
+<li><p>下载并安装FastDFS<br>下载可以到 <a href="https://nchc.dl.sourceforge.net/project/fastdfs/FastDFS%20Server%20Source%20Code/FastDFS%20Server%20with%20PHP%20Extension%20Source%20Code%20V5.08/FastDFS_v5.08.tar.gz" target="_blank" rel="external">这里</a> 直接下载再 scp 复制到服务器上。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:/home/leung# tar -xf FastDFS_v5.08.tar_2.gz</div><div class="line">root@ubuntu:/home/leung# cd FastDFS</div><div class="line">root@ubuntu:/home/leung# ./make.sh</div><div class="line">root@ubuntu:/home/leung# ./make.sh install</div></pre></td></tr></table></figure>
+<p>查看是否有 fdfs 的命令可用：<br><img src="http://ojrkbauy9.bkt.clouddn.com/3.fdfs-install.png" alt="查看所有 fdfs 的命令"></p>
+</li>
+<li><p>配置跟踪服务器（tracker server）<br>先将 fdfs 的默认配置复制到 fdfs 的配置路径中： <code>/etc/fdfs</code><br><img src="http://ojrkbauy9.bkt.clouddn.com/4.tracker-conf.png" alt="配置文件"></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:/home/leung/FastDFS<span class="comment"># cp -r conf/* /etc/fdfs/</span></div><div class="line">root@ubuntu:/home/leung/FastDFS<span class="comment"># ls /etc/fdfs/</span></div><div class="line">anti-steal.jpg  http.conf   storage.conf      tracker.conf</div><div class="line">client.conf     mime.types  storage_ids.conf</div></pre></td></tr></table></figure>
+<p>修改 tracker 的配置文件, <code>tracker.conf</code>.其中最基本的修改配置为：</p>
+<p><code>bind_addr</code>: 修改为 <code>YOUR_SERVER_IP</code> ，我这里设置为虚拟机的IP: <code>192.168.0.144</code></p>
+<p><code>base_path</code>: 修改为自定义的存储路径，我这里为 <code>/data/fastdfs/tracker</code></p>
+<p>保存退出。</p>
+<p>新建 tracker 文件夹： <code>mkdir -p /data/fastdfs/tracker</code></p>
+<p>尝试启动 tracker ： （22122 为tracker默认监听端口）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:/etc/fdfs<span class="comment"># fdfs_trackerd /etc/fdfs/tracker.conf</span></div><div class="line">root@ubuntu:/etc/fdfs<span class="comment"># ss -lntup | grep 22122</span></div><div class="line">tcp    LISTEN     0      128    192.168.0.144:22122                 *:*                   users:((<span class="string">"fdfs_trackerd"</span>,pid=82767,fd=5))</div></pre></td></tr></table></figure>
+<p>看到tracker已经在监听22122端口，说明启动成功。</p>
+</li>
+<li><p>配置存储服务器（storage server）<br>修改 storage 的配置文件<code>storage.conf</code>。其中最基本的修改配置为：</p>
+<p><code>bind_addr</code>: 修改为 <code>YOUR_SERVER_IP</code> ，我这里设置为虚拟机的IP: <code>192.168.0.144</code></p>
+<p><code>base_path</code>: 修改为自定义的存储路径，我这里为 <code>/data/fastdfs/storage</code></p>
+<p><code>storage_path0</code>: 修改为自定义的存储路径，我这里为 <code>/data/fastdfs/storage</code></p>
+<p><code>tracker_server</code>: 修改为你的 tracker 监听的ip和端口号，我这里为 <code>192.168.0.144:22122</code></p>
+<p><code>http.server_port</code>: 修改为你的 Nginx 监听的端口号，我这里是80端口</p>
+<p>保存退出。</p>
+<p>新建 storage 文件夹： <code>mkdir -p /data/fastdfs/storage</code></p>
+<p>尝试启动 storage ： （23000 为tracker默认监听端口）</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:/etc/fdfs<span class="comment"># fdfs_storaged /etc/fdfs/storage.conf</span></div><div class="line">root@ubuntu:/etc/fdfs<span class="comment"># ss -lntup | grep 23000</span></div><div class="line">tcp    LISTEN     0      128    192.168.0.144:23000                 *:*                   users:((<span class="string">"fdfs_storaged"</span>,pid=82800,fd=5))</div></pre></td></tr></table></figure>
+<p>看到storage已经在监听23000端口，说明启动成功。</p>
+</li>
+<li><p>文件上传测试<br>基本配置完成之后，需要上传个文件测试看是否真的可用。</p>
+<p>修改 client.conf :</p>
+<p><code>base_path</code>: 修改为tracker的路径，我这里为 <code>/data/fastdfs/tracker</code></p>
+<p><code>tracker_server</code>: 修改为你的 tracker 监听的ip和端口号，我这里为 <code>192.168.0.144:22122</code></p>
+<p>保存退出。</p>
+<p>使用 fdfs_upload_file 测试上传是否成功：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:/home/leung<span class="comment"># fdfs_upload_file /etc/fdfs/client.conf /home/leung/gal_gadot.jpg</span></div><div class="line">group1/M00/00/00/wKgAkFk3zbeANnOvAAODyc0cLwA944.jpg</div><div class="line">root@ubuntu:/home/leung<span class="comment">#</span></div></pre></td></tr></table></figure>
+<p>看到返回来了一个 file_id （看上去像是文件路径，在 fdfs系统中称之为 file_id ）表明上传图片成功，该 tracker 和 storage 均是可用的。</p>
+</li>
+</ol>
+<h2 id="在-Nginx-上使用-FastDFS"><a href="#在-Nginx-上使用-FastDFS" class="headerlink" title="在 Nginx 上使用 FastDFS"></a>在 Nginx 上使用 FastDFS</h2><p>现在图片是传上去了，但是怎么能查看到呢？</p>
+<p>这时候需要配置 Nginx 了。（Apache没试过）</p>
+<p>先下载 Nginx 的 fdfs 模块，并修改模块配置文件（这里有个坑，不修改的话，可能在安装的时候报错）<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:/home/leung/<span class="comment"># wget https://nchc.dl.sourceforge.net/project/fastdfs/FastDFS%20Nginx%20Module%20Source%20Code/fastdfs-nginx-module_v1.16.tar.gz</span></div><div class="line">root@ubuntu:/home/leung/<span class="comment"># tar xf fastdfs-nginx-module_v1.16.tar.gz</span></div><div class="line">root@ubuntu:/home/leung/<span class="comment"># cd fastdfs-nginx-module/src/</span></div><div class="line">root@ubuntu:/home/leung/fastdfs-nginx-module/src/<span class="comment"># vim config</span></div><div class="line">// 进入编辑后，直接输入 `:%s+/usr/<span class="built_in">local</span>/+/usr/+g` 包括 `:` ，替换全文的 `/usr/<span class="built_in">local</span>` 配置路径，保存退出</div></pre></td></tr></table></figure></p>
+<p>拷贝fastdfs-nginx-module模块中配置文件到/etc/fdfs目录中并编辑：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:/home/leung/fastdfs-nginx-module/src<span class="comment"># cp mod_fastdfs.conf /etc/fdfs/</span></div><div class="line">root@ubuntu:/home/leung/fastdfs-nginx-module/src<span class="comment"># cd /etc/fdfs/</span></div><div class="line">root@ubuntu:/etc/fdfs<span class="comment"># vi mod_fastdfs.conf</span></div></pre></td></tr></table></figure></p>
+<p>修改配置项：</p>
+<p><code>connect_timeout</code>: 连接超时时间，我这里设置为 10 秒</p>
+<p><code>base_path</code>: 路径，我这里没动，默认为/tmp</p>
+<p><code>tracker_server</code>：服务器tracker 的监听ip和端口，我这里设置为 <code>192.168.0.144:22122</code></p>
+<p><code>storage_server_port</code>：storage 监听端口，我这里是默认的 23000</p>
+<p><code>url_have_group_name</code>：url是否带上 group_name，这里最好设置为true，要不待会 Nginx 会报400的错误</p>
+<p><code>store_path0</code>：修改为storage的存储路径，我这里为 <code>/data/fastdfs/storage</code></p>
+<p><code>group_name</code>：设置为默认group1即可。</p>
+<p>编辑完毕，保存退出。</p>
+<p>安装 Nginx 依赖库：</p>
+<p>For Ubuntu: <code>apt-get install libpcre3 libpcre3-dev zlib1g-dev openssl libssl-dev -y</code></p>
+<p>For CentOS: <code>yum install -y pcre-devel zlib-devel</code></p>
+<p>因为虚拟机刚刚安装，所以先安装 Nginx。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">root@ubuntu:/home/leung<span class="comment"># wget https://nginx.org/download/nginx-1.13.1.tar.gz</span></div><div class="line">root@ubuntu:/home/leung<span class="comment"># ls</span></div><div class="line">FastDFS  FastDFS_v5.08.tar_2.gz  gal_gadot.jpg  libfastcommon-master  libfastcommon-master.zip  nginx-1.13.1.tar.gz</div><div class="line">root@ubuntu:/home/leung<span class="comment"># tar -xf nginx-1.13.1.tar.gz</span></div><div class="line">root@ubuntu:/home/leung<span class="comment"># cd nginx-1.13.1</span></div><div class="line">root@ubuntu:/home/leung/nginx-1.13.1<span class="comment"># ls</span></div><div class="line">auto  CHANGES  CHANGES.ru  conf  configure  contrib  html  LICENSE  man  README  src</div><div class="line">root@ubuntu:/home/leung/nginx-1.13.1<span class="comment"># ./configure --prefix=/usr/local/nginx/  --with-http_stub_status_module --with-http_ssl_module --with-http_v2_module --with-http_gzip_static_module --with-ipv6 --with-http_sub_module --add-module=/home/leung/fastdfs-nginx-module/src/</span></div><div class="line">root@ubuntu:/home/leung/nginx-1.13.1<span class="comment"># make &amp;&amp; make install</span></div></pre></td></tr></table></figure></p>
+<p><strong>注意，如果不是新安装的 nginx，请先执行 <code>nginx -V</code> 查看当前nginx已安装的模块，再加上 fdfs 的模块。并且，覆盖安装的话请不要 <code>make install</code> ，具体看下面的操作</strong></p>
+<p>如果已经安装过Nginx的话，只需要加上新模块重新编译即可。</p>
+<p>先执行 <code>nginx -V</code> 查看当前nginx已安装的模块，如下图，我的服务器之前使用 apt 安装的，所以安装的模块有点多：<br><img src="http://ojrkbauy9.bkt.clouddn.com/5.nginx-install.png" alt="Nginx配置"></p>
+<p>把 <code>configure arguments:</code> 后的参数拷贝下载，放在 <code>./configure</code> 后面，再加上 <code>--add-module=/home/leung/fastdfs-nginx-module/src/</code> 即可，add-module后的路径请根据实际情况进行替换.<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./configure --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/<span class="built_in">log</span>/nginx/error.log --http-log-path=/var/<span class="built_in">log</span>/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-file-aio --with-threads --with-ipv6 --with-http_addition_module --with-http_auth_request_module --with-http_dav_module --with-http_flv_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_mp4_module --with-http_random_index_module --with-http_realip_module --with-http_secure_link_module --with-http_slice_module --with-http_ssl_module --with-http_stub_status_module --with-http_sub_module --with-http_v2_module --with-mail --with-mail_ssl_module --with-stream --with-stream_ssl_module --with-cc-opt=<span class="string">'-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2'</span> --with-ld-opt=<span class="string">'-Wl,-Bsymbolic-functions -Wl,-z,relro -Wl,-z,now -Wl,--as-needed'</span> --add-module=/home/leung/fdfs/fastdfs-nginx-module/src/</div></pre></td></tr></table></figure></p>
+<p><strong>完毕后只执行 <code>make</code>，不要执行 <code>make install</code></strong><br>先将原来的nginx 执行文件备份：我这里的执行路径为上述的 <code>/usr/sbin/nginx</code> ，大家替换成真实的路径。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">root@localhost:~<span class="comment"># mv /usr/sbin/nginx /usr/sbin/nginx-bak</span></div><div class="line">root@localhost:/home/leung/fdfs/nginx-1.13.1<span class="comment"># cp objs/nginx /usr/sbin/nginx</span></div><div class="line">root@localhost:/home/leung/fdfs/nginx-1.13.1<span class="comment"># nginx -v</span></div><div class="line">nginx version: nginx/1.13.1</div><div class="line">root@localhost:/home/leung/fdfs/nginx-1.13.1<span class="comment"># nginx -V</span></div></pre></td></tr></table></figure></p>
+<p>可以看到已经加上 fdfs 的模块了，这时候就可以平滑升级 nginx：<br><img src="http://ojrkbauy9.bkt.clouddn.com/5.nginx-version.png" alt="新版nginx配置"><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">root@localhost:/home/leung/fdfs/nginx-1.13.1<span class="comment"># make upgrade</span></div><div class="line">/usr/sbin/nginx -t</div><div class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</div><div class="line">nginx: configuration file /etc/nginx/nginx.conf <span class="built_in">test</span> is successful</div><div class="line"><span class="built_in">kill</span> -USR2 `cat /var/run/nginx.pid`</div><div class="line">sleep 1</div><div class="line"><span class="built_in">test</span> -f /var/run/nginx.pid.oldbin</div><div class="line"><span class="built_in">kill</span> -QUIT `cat /var/run/nginx.pid.oldbin`</div><div class="line">root@localhost:/home/leung/fdfs/nginx-1.13.1<span class="comment">#</span></div></pre></td></tr></table></figure></p>
+<p>Nginx 的升级/安装到这里就完成了。</p>
+<p>在 Nginx 配置文件中加入一句：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">location /group[0-9]/ &#123;</div><div class="line">    ngx_fastdfs_module;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>重启 Nginx ，访问你的网站，就可以看到图片了。<br><img src="http://ojrkbauy9.bkt.clouddn.com/6-result.png" alt="访问图片"></p>
+<h2 id="PHP与FDFS的交集"><a href="#PHP与FDFS的交集" class="headerlink" title="PHP与FDFS的交集"></a>PHP与FDFS的交集</h2><p>一个简易的服务器终于跑起来了，能正常上传和下载。但是，总不可能每次上传图片都要用命令行吧，这样既不安全，又麻烦。还是PHP大法好。</p>
+<p>PHP要支持fdfs的话，就需要安装 php 的 fdfs 拓展。<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">root@localhost:~<span class="comment"># cd /home/leung/fdfs/FastDFS/php_client</span></div><div class="line">root@localhost:/home/leung/fdfs/FastDFS/php_client<span class="comment"># phpize</span></div><div class="line">root@localhost:/home/leung/fdfs/FastDFS/php_client<span class="comment"># ./configure --with-php-config=/usr/local/php5/bin/php-config</span></div><div class="line">root@localhost:/home/leung/fdfs/FastDFS/php_client<span class="comment"># make &amp;&amp; make install</span></div><div class="line">root@localhost:/home/leung/fdfs/FastDFS/php_client<span class="comment"># cat fastdfs_client.ini &gt;&gt; /usr/local/php5/etc/php.ini</span></div></pre></td></tr></table></figure></p>
+<p>其中， <code>--with-php-config</code> 后面接的是你的 <code>php-config</code> 的路径，不知道的直接 <code>./configure</code> 试试（我的是 apt 安装的直接 <code>configure</code> 就可以了）</p>
+<p>运行 <code>php -m | grep fastdfs</code> 查看是否安装模块成功<br><img src="http://ojrkbauy9.bkt.clouddn.com/7.php-install-module.png" alt="安装模块成功"><br>重启 php-fpm : <code>service php-fpm restart</code><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@localhost:/etc/php/7.0/fpm<span class="comment"># cat /run/php/php7.0-fpm.pid</span></div><div class="line">17904</div><div class="line">root@localhost:/etc/php/7.0/fpm<span class="comment"># kill -USR2 17904</span></div></pre></td></tr></table></figure></p>
+<h2 id="测试PHP上传图片"><a href="#测试PHP上传图片" class="headerlink" title="测试PHP上传图片"></a>测试PHP上传图片</h2><p>新建php文件：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">$fileId = fastdfs_storage_upload_by_filename1(<span class="string">'/home/leung/test.jpg'</span>, <span class="string">'jpg'</span>);</div><div class="line"><span class="keyword">echo</span> $fileId;</div></pre></td></tr></table></figure></p>
+<p>运行php文件：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@localhost:/home/leung<span class="comment"># php fdfs.php</span></div><div class="line">group1/M00/00/02/eBmZrlk6cU-AY-cLAAQ9NyZsxTs546.jpg</div><div class="line">root@localhost:/home/leung<span class="comment">#</span></div></pre></td></tr></table></figure></p>
+<p>可见，该函数直接返回了一个 fileId 。即为上传图片成功：<br><img src="http://ojrkbauy9.bkt.clouddn.com/8.php-upload%20.png" alt="成功上传图片"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nginx/" rel="tag"># nginx</a>
+          
+            <a href="/tags/fastdfs/" rel="tag"># fastdfs</a>
+          
+            <a href="/tags/fdfs/" rel="tag"># fdfs</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/05/10/payment-alipay/" rel="next" title="支付开发填坑记之支付宝">
+                <i class="fa fa-chevron-left"></i> 支付开发填坑记之支付宝
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="梁生、" />
+          <p class="site-author-name" itemprop="name">梁生、</p>
+           
+              <p class="site-description motion-element" itemprop="description">《JavaScript - 入门到放弃》</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么选择-FastDFS"><span class="nav-number">1.</span> <span class="nav-text">为什么选择 FastDFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装-FastDFS"><span class="nav-number">2.</span> <span class="nav-text">安装 FastDFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在-Nginx-上使用-FastDFS"><span class="nav-number">3.</span> <span class="nav-text">在 Nginx 上使用 FastDFS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PHP与FDFS的交集"><span class="nav-number">4.</span> <span class="nav-text">PHP与FDFS的交集</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试PHP上传图片"><span class="nav-number">5.</span> <span class="nav-text">测试PHP上传图片</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-JZ · Leung"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">梁生、</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

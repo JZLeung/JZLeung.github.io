@@ -1,0 +1,756 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="javascript,qiniu,upload," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="前端·禁地" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="七牛云是国内算是挺不错的图片存储服务器，免费用户能拥有10G空间，每个月10G的下载流量，对于个人用户用于做个小博客，小网站来说，已经够了。">
+<meta name="keywords" content="javascript,qiniu,upload">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用七牛云存储图片 之 上传图片">
+<meta property="og:url" content="http://blog.leungjz.top/2017/01/22/qiniu-js-upload/index.html">
+<meta property="og:site_name" content="前端·禁地">
+<meta property="og:description" content="七牛云是国内算是挺不错的图片存储服务器，免费用户能拥有10G空间，每个月10G的下载流量，对于个人用户用于做个小博客，小网站来说，已经够了。">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/973f9ed26b6ae914e6b7174c69a4bf6e">
+<meta property="og:updated_time" content="2017-06-29T12:45:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用七牛云存储图片 之 上传图片">
+<meta name="twitter:description" content="七牛云是国内算是挺不错的图片存储服务器，免费用户能拥有10G空间，每个月10G的下载流量，对于个人用户用于做个小博客，小网站来说，已经够了。">
+<meta name="twitter:image" content="http://ojrkbauy9.bkt.clouddn.com/973f9ed26b6ae914e6b7174c69a4bf6e">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.leungjz.top/2017/01/22/qiniu-js-upload/"/>
+
+
+
+
+
+  <title> 使用七牛云存储图片 之 上传图片 | 前端·禁地 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端·禁地</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-github">
+          <a href="https://github.com/JZLeung" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github"></i> <br />
+            
+            GitHub
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.leungjz.top/2017/01/22/qiniu-js-upload/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="梁生、">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端·禁地">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用七牛云存储图片 之 上传图片
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-01-22T17:35:55+08:00">
+                2017-01-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>七牛云是国内算是挺不错的图片存储服务器，免费用户能拥有10G空间，每个月10G的下载流量，对于个人用户用于做个小博客，小网站来说，已经够了。<br><a id="more"></a></p>
+<p>但是，七牛的官方开发文档真心会看得一头雾水。</p>
+<p>于是，先记录下来这次传图的过程。</p>
+<p>在上传图片之前，需要准备两样东西：</p>
+<ol>
+<li><code>AccessKey</code></li>
+<li><code>SecretKey</code></li>
+</ol>
+<p>其中， AccessKey 和 SecretKey 能在 个人中心 &gt; 秘钥管理中获得,如图。</p>
+<ol>
+<li><p>创建空间 并 创建配置文件</p>
+<p>选择 <strong>资源主页</strong> ，再选择 <strong>立即添加</strong>，或者选择 <strong>对象存储</strong> ，然后选择 <strong>添加</strong> 。</p>
+<p>然后填上空间的名字，选择区域即可。</p>
+<p><strong>其中，空间的名字是我们使用代码上传至七牛服务器的第三个参数 <code>Bucket</code></strong></p>
+<p>可以将这3个常量存储在配置文件<code>config.qiniu.php</code>中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">define(&apos;QINIU_SECRET_KEY&apos;, &apos;YOUR_SK&apos;);</div><div class="line">define(&apos;QINIU_ACCESS_KEY&apos;, &apos;YOUR_AK&apos;);</div><div class="line">define(&apos;QINIU_DOMAIN&apos;, &apos;YOUR_QINIU_DOMAIN&apos;);</div><div class="line">define(&apos;QINIU_BUCKET&apos;, &apos;YOUR_BUCKET_NAME&apos;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>获取上传凭证</p>
+<p>上传凭证的作用：</p>
+<blockquote>
+<p>客户端上传前需要先从服务端获取上传凭证，并在上传资源时将上传凭证作为请求内容的一部分。不带凭证或带非法凭证的请求将返回 HTTP 错误码 401，代表认证失败。</p>
+</blockquote>
+<p>生成规则：</p>
+<ol>
+<li><p>构造上传策略：</p>
+<blockquote>
+<p>上传策略是资源上传时附带的一组配置设定。通过这组配置信息，七牛云存储可以了解用户上传的需求：它将上传什么资源，上传到哪个空间，上传结果是回调通知还是使用重定向跳转，是否需要设置反馈信息的内容，以及授权上传的截止时间等等。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line"></div><div class="line">    &quot;scope&quot;:               &quot;&lt;Bucket                   string&gt;&quot;,</div><div class="line">    &quot;deadline&quot;:             &lt;UnixTimestamp            uint32&gt;,</div><div class="line">    &quot;insertOnly&quot;:           &lt;AllowFileUpdating        int&gt;,</div><div class="line">    &quot;endUser&quot;:             &quot;&lt;EndUserId                string&gt;&quot;,</div><div class="line">    &quot;returnUrl&quot;:           &quot;&lt;RedirectURL              string&gt;&quot;,</div><div class="line">    &quot;returnBody&quot;:          &quot;&lt;ResponseBodyForAppClient string&gt;&quot;,</div><div class="line">    &quot;callbackUrl&quot;:         &quot;&lt;RequestUrlForAppServer   string&gt;&quot;,</div><div class="line">    &quot;callbackHost&quot;:        &quot;&lt;RequestHostForAppServer  string&gt;&quot;,</div><div class="line">    &quot;callbackBody&quot;:        &quot;&lt;RequestBodyForAppServer  string&gt;&quot;,</div><div class="line">    &quot;callbackBodyType&quot;:    &quot;&lt;RequestBodyTypeForAppServer  string&gt;&quot;,</div><div class="line">    &quot;callbackFetchKey&quot;:     &lt;RequestKeyForApp         int&gt;</div><div class="line">    &quot;persistentOps&quot;:       &quot;&lt;persistentOpsCmds        string&gt;&quot;,</div><div class="line">    &quot;persistentNotifyUrl&quot;: &quot;&lt;persistentNotifyUrl      string&gt;&quot;,</div><div class="line">    &quot;persistentPipeline&quot;:  &quot;&lt;persistentPipeline       string&gt;&quot;,</div><div class="line">    &quot;saveKey&quot;:             &quot;&lt;SaveKey                  string&gt;&quot;,</div><div class="line">    &quot;fsizeMin&quot;:             &lt;FileSizeMin            int64&gt;,</div><div class="line">    &quot;fsizeLimit&quot;:           &lt;FileSizeLimit            int64&gt;,</div><div class="line">    &quot;detectMime&quot;:           &lt;AutoDetectMimeType       int&gt;,</div><div class="line">    &quot;mimeLimit&quot;:           &quot;&lt;MimeLimit                string&gt;&quot;</div><div class="line">    &quot;deleteAfterDays&quot;:     &quot;&lt;deleteAfterDays          int&gt;&quot;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<table><br><tr><th>字段名称    </th><th>必填 </th><th>说明 </th></tr><br><tr><td>scope      </td><td>是          </td><td>指定上传的目标资源空间 Bucket 和资源键 Key（key的长度最大为750字节）。有两种格式： ● <code>&lt;bucket&gt;</code>，表示允许用户上传文件到指定的 bucket。在这种格式下文件只能新增，若已存在同名资源上传则会失败。  ● <code>&lt;bucket&gt;</code>:<code>&lt;key&gt;</code>，表示只允许用户上传指定 key 的文件。在这种格式下文件默认允许修改，若已存在同名资源则会被覆盖。如果只希望上传指定 key 的文件，并且不允许修改，那么可以将下面的 <code>insertOnly</code> 属性值设为 1</td></tr><br><tr><td>deadline   </td><td>是          </td><td>上传凭证有效截止时间。<code>Unix时间戳</code>，单位为秒。该截止时间为上传完成后，在七牛空间生成文件的校验时间，而非上传的开始时间，一般建议设置为上传开始时间 + 3600s，用户可根据具体的业务场景对凭证截止时间进行调整。</td></tr><br><tr><td>insertOnly </td><td>     </td><td>        限定为新增语意。如果设置为非 0 值，则无论 <code>scope</code> 设置为什么形式，仅能以新增模式上传文件。</td></tr><br><tr><td>endUser </td><td>     </td><td>        唯一属主标识。特殊场景下非常有用，例如根据 App-Client 标识给图片或视频打水印。</td></tr><br><tr><td>returnUrl </td><td>     </td><td>        Web 端文件上传成功后，浏览器执行 303 跳转的 URL。通常用于 HTML Form 上传。文件上传成功后会跳转到 <code>&lt;returnUrl&gt;?upload_ret=&lt;queryString&gt;</code>，<code>&lt;queryString&gt;</code>包含 <code>returnBody</code> 内容。如不设置 returnUrl，则直接将 returnBody 的内容返回给客户端。</td></tr><br><tr><td>returnBody </td><td>     </td><td>        上传成功后，自定义七牛云最终返回給上传端（在指定 returnUrl 时是携带在跳转路径参数中）的数据。支持魔法变量和自定义变量。returnBody 要求是合法的 JSON 文本。例如 <code>{&quot;key&quot;: $(key), &quot;hash&quot;: $(etag), &quot;w&quot;: $(imageInfo.width), &quot;h&quot;: $(imageInfo.height)}</code>。</td></tr><br><tr><td>callbackUrl </td><td>     </td><td>        上传成功后，七牛云向 App-Server 发送 POST 请求的 URL。必须是公网上可以正常进行 POST 请求并能响应 HTTP/1.1 200 OK 的有效 URL。另外，为了给客户端有一致的体验，我们要求 callbackUrl 返回包 Content-Type 为 “application/json”，即返回的内容必须是合法的 JSON 文本。出于高可用的考虑，本字段允许设置多个 callbackUrl(用英文符号 ; 分隔)，在前一个 callbackUrl 请求失败的时候会依次重试下一个 callbackUrl。一个典型例子是 <code>http://&lt;ip1&gt;/callback;http://&lt;ip2&gt;/callback</code>，并同时指定下面的 callbackHost 字段。在 callbackUrl 中使用 ip 的好处是减少了对 dns 解析的依赖，可改善回调的性能和稳定性。</td></tr><br><tr><td>callbackHost </td><td>     </td><td>        上传成功后，七牛云向”App-Server”发送回调通知时的 Host 值。 与callbackUrl配合使用，仅当设置了 callbackUrl 时才有效。”callbackHost”:”a.example.com”，host域名不加http://</td></tr><br><tr><td>callbackBody </td><td>     </td><td>        上传成功后，七牛云向”App-Server”发送Content-Type: application/x-www-form-urlencoded 的POST请求。 该字段”App-Server”可以通过直接读取请求的query来获得，支持魔法变量和自定义变量。callbackBody 要求是合法的 url query string。如：<code>key=$(key)&amp;hash=$(etag)&amp;w=$(imageInfo.width)&amp;h=$(imageInfo.height)</code>。</td></tr><br><tr><td>callbackBodyType </td><td>     </td><td>        上传成功后，七牛云向”App-Server”发送回调通知<code>callbackBody</code>的<code>Content-Type</code>。 默认为<code>application/x-www-form-urlencoded</code>，也可设置为<code>application/json</code>。</td></tr><br><tr><td>callbackFetchKey </td><td>     </td><td>        是否启用fetchKey上传模式。 0为关闭，1为启用。具体见callbackFetchKey详解。</td></tr><br><tr><td>persistentOps </td><td>     </td><td>        资源上传成功后触发执行的预转持久化处理指令列表。 每个指令是一个API规格字符串，多个指令用;分隔。 请参阅persistenOps详解与示例。同时添加persistentPipeline字段，使用专用队列处理，请参阅persistentPipeline。</td></tr><br><tr><td>persistentNotifyUrl </td><td>     </td><td>        接收持久化处理结果通知的URL。 必须是公网上可以正常进行POST请求并能响应”HTTP/1.1 200 OK”的有效URL。 该URL获取的内容和持久化处理状态查询(prefop)的处理结果一致。 发送body格式是<code>Content-Type</code>为<code>application/json</code>的POST请求，需要按照读取流的形式读取请求的body才能获取。</td></tr><br><tr><td>persistentPipeline </td><td>     </td><td>        转码队列名。 资源上传成功后，触发转码时指定独立的队列进行转码。为空则表示使用公用队列，处理速度比较慢。建议使用专用队列。</td></tr><br><tr><td>saveKey </td><td>     </td><td>        自定义资源名。 支持魔法变量及自定义变量。这个字段仅当用户上传的时候没有主动指定key的时候起作用。</td></tr><br><tr><td>fsizeMin </td><td>     </td><td>        限定上传文件大小最小值，单位：字节（Byte）。设置为k，即k及k以上的文件可以上传。</td></tr><br><tr><td>fsizeLimit </td><td>     </td><td>        限定上传文件大小最大值，单位：字节（Byte）。 超过限制上传文件大小的最大值会被判为上传失败，返回413状态码。</td></tr><br><tr><td>detectMime </td><td>     </td><td>        开启MimeType侦测功能。 设为非0值，则忽略上传端传递的文件MimeType信息，使用七牛服务器侦测内容后的判断结果。 默认设为0值，如上传端指定了MimeType则直接使用该值，否则按如下顺序侦测MimeType值： 1. 检查文件扩展名； 2. 检查Key扩展名； 3. 侦测内容。 如不能侦测出正确的值，会默认使用 <code>application/octet-stream</code> 。</td></tr><br><tr><td>mimeLimit </td><td>     </td><td>        限定用户上传的文件类型。 指定本字段值，七牛服务器会侦测文件内容以判断MimeType，再用判断值跟指定值进行匹配，匹配成功则允许上传，匹配失败则返回403状态码。 示例： ● <code>image/*</code>表示只允许上传图片类型  ● <code>image/jpeg;image/png</code>表示只允许上传jpg和png类型的图片  ● <code>!application/json;text/plain</code>表示禁止上传json文本和纯文本。注意最前面的感叹号！</td></tr><br><tr><td>deleteAfterDays </td><td>     </td><td>        文件在多少天后被删除，七牛将文件上传时间与指定的<code>deleteAfterDays</code>天数相加，得到的时间入到后一天的午夜(CST,中国标准时间)，从而得到文件删除开始时间。例如文件在2015年1月1日上午10:00 CST上传，指定<code>deleteAfterDays</code>为3天，那么会在2015年1月5日00:00 CST之后当天内删除文件。</td></tr><br></table>
+
+<p>如现有如下上传策略：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">   $putPolicy = <span class="keyword">array</span>(</div><div class="line">       <span class="string">'scope'</span> =&gt; QINIU_BUCKET.<span class="string">':'</span>.$filename ,</div><div class="line">   	<span class="string">'deadline'</span> =&gt; time()+<span class="number">3600</span> ,</div><div class="line">   	<span class="string">'returnBody'</span> =&gt; <span class="string">'&#123;</span></div><div class="line">   		"name": $(fname),</div><div class="line">           "file_url": $(x:file_url)</div><div class="line">   	&#125;'</div><div class="line">);</div></pre></td></tr></table></figure>
+<p>该上传策略定义了：</p>
+<pre><code>1.  指定了图片上传至`QINIU_BUCKET`存储空间中，同时，该token只允许文件名为 `$filename` 的文件上传。
+2.  token有效时间为1个小时。
+3.  设置返回信息，返回上传的文件的文件名，和自定义参数中的 `file_url`
+</code></pre></li>
+<li><p>将上传策略序列化成为JSON格式：<br>用户可以使用各种语言的 JSON 库，也可以手工拼接字符串。序列化后，应得到如下形式的字符串（字符串值以外部分不含空格或换行）：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$putPolicy = json_encode($putPolicy);</div></pre></td></tr></table></figure>
+<p>或</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">$putPolicy = <span class="string">'&#123;</span></div><div class="line">    "scope": "my-bucket:sunflower.jpg",</div><div class="line">    "deadline":1451491200,</div><div class="line">    "returnBody":</div><div class="line">        "&#123;</div><div class="line">        \"name\":$(fname),</div><div class="line">        \"size\":$(fsize),</div><div class="line">        \"w\":$(imageInfo.width),</div><div class="line">        \"h\":$(imageInfo.height),</div><div class="line">        \"hash\":$(etag)</div><div class="line">    &#125;"</div><div class="line">&#125;'</div></pre></td></tr></table></figure>
+</li>
+<li><p>对 JSON 编码的上传策略进行URL安全的Base64编码，得到待签名字符串：<br>官方给的demo代码为：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">encodedPutPolicy = urlsafe_base64_encode(putPolicy)</div></pre></td></tr></table></figure>
+<p>运行之后，发现 <code>urlsafe_base64_encode</code> 这个函数是自定义的，估计相当于将 <code>+,/</code>号转换为 <code>-,_</code></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">   <span class="function"><span class="keyword">function</span> <span class="title">_urlsafe_base64_encode</span><span class="params">($str)</span></span>&#123;</div><div class="line">	$find = <span class="keyword">array</span>(<span class="string">'+'</span>, <span class="string">'/'</span>);</div><div class="line">	$replace = <span class="keyword">array</span>(<span class="string">'-'</span>, <span class="string">'_'</span>);</div><div class="line">	<span class="keyword">return</span> str_replace($find, $replace, base64_encode($str));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>使用SecretKey对上一步生成的待签名字符串计算HMAC-SHA1签名：<br>官方给的demo代码为：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sign = hmac_sha1(encodedPutPolicy, QINIU_SECRET_KEY)</div></pre></td></tr></table></figure>
+<p>然而， <code>hmac_sha1</code> 这个函数也不是php自带的。经过搜索发现，其实PHP5.1.2之后的版本内置了直接产生的函数，只是名字不一样罢了： <a href="http://php.net/manual/en/function.hash-hmac.php" target="_blank" rel="external">hash_hmac</a>，因此需要将这里修改为：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$sign = hash_hmac(<span class="string">'sha1'</span> ,$encodedPutPolicy, QINIU_SECRET_KEY, <span class="keyword">true</span>);</div></pre></td></tr></table></figure>
+<p>第一个参数为哈希算法名（支持<code>md5</code>，<code>sha256</code>，<code>haval160,4</code>等，具体可到<a href="http://php.net/manual/zh/function.hash-algos.php" target="_blank" rel="external"> hash_algos()</a>中查询）；第二个参数为需要进行哈希的信息；第三个参数为秘钥；第四个参数为输出格式（true为输出二进制，false为输出16进制）</p>
+</li>
+<li><p>对签名进行URL安全的Base64编码：<br>官方代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">encodedSign = urlsafe_base64_encode(sign)</div></pre></td></tr></table></figure>
+<p>这里的 <code>urlsafe_base64_encode</code> 依然为上述的自定义函数。</p>
+</li>
+<li><p>将AccessKey、encodedSign 和 encodedPutPolicy 用英文符号 <code>:</code> 连接起来：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$uploadToken = QINIU_ACCESS_KEY . &apos;:&apos; . $encodedSign . &apos;:&apos; . $encodedPutPolicy</div></pre></td></tr></table></figure>
+</li>
+<li><p>返回token至客户端</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">echo json_encode(array(&apos;token&apos; =&gt; $uploadToken, &apos;key&apos; =&gt; $filename, &apos;fileurl&apos; =&gt; QINIU_DOMAIN));</div></pre></td></tr></table></figure>
+<p>这里返回了文件名和文件url，主要是因为，保证文件在七牛中的唯一性，和可以随时更改七牛的空间访问地址。</p>
+</li>
+</ol>
+</li>
+<li><p>上传图片<br>使用js直接上传图片至七牛服务器他的过程为：</p>
+<p>向服务器请求 <code>uploadToken</code> =&gt;</p>
+<p>获取 ‘uploadToken` 后上传图片 =&gt;</p>
+<p>上传成功，显示图片。</p>
+<p><strong>这里没有使用 zepto jquery 这种库，所以浏览器的兼容性为兼容 FormData 的现代浏览器</strong></p>
+<p>使用 xhr 和 FormData 进行异步传输数据。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">ajax</span>(<span class="params">options</span>)</span>&#123;</div><div class="line">    options.start &amp;&amp; options.start.call(<span class="string">'start'</span>);</div><div class="line">    <span class="comment">//执行上传操作</span></div><div class="line">    <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</div><div class="line">    xhr.open(<span class="string">"post"</span>, options.url, <span class="literal">true</span>);</div><div class="line">    xhr.setRequestHeader(<span class="string">"X-Requested-With"</span>, <span class="string">"XMLHttpRequest"</span>);</div><div class="line">    xhr.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">if</span> (xhr.readyState == <span class="number">4</span>) &#123;</div><div class="line">            returnDate = <span class="built_in">JSON</span>.parse(xhr.responseText);</div><div class="line">            options.success &amp;&amp; options.success.call(<span class="string">'success'</span>, returnDate);</div><div class="line">        &#125;;</div><div class="line">    &#125;;</div><div class="line">    <span class="comment">//表单数据</span></div><div class="line">    <span class="keyword">var</span> fd = <span class="keyword">new</span> FormData();</div><div class="line">    <span class="keyword">for</span> (k <span class="keyword">in</span> options.data) &#123;</div><div class="line">        fd.append(k, options.data[k]);</div><div class="line">    &#125;</div><div class="line">    fd.append(<span class="string">'file'</span>, options.file);</div><div class="line">    <span class="comment">//执行发送</span></div><div class="line">    result = xhr.send(fd);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>新建一个表单 form</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">""</span> <span class="attr">method</span>=<span class="string">"post"</span> <span class="attr">name</span>=<span class="string">"upload_form"</span> <span class="attr">hidden</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"file"</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"key"</span> <span class="attr">value</span>=<span class="string">""</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"x:file_url"</span> <span class="attr">value</span>=<span class="string">""</span>&gt;</span></div><div class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"hidden"</span> <span class="attr">name</span>=<span class="string">"token"</span> <span class="attr">value</span>=<span class="string">""</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>给上传文件的按钮绑定一个 change 时间：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">file.addEventListener(<span class="string">'change'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">e</span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> selected_file = e.target.files[<span class="number">0</span>];</div><div class="line">    <span class="comment">// 先请求服务器获取token</span></div><div class="line">    ajax(&#123;</div><div class="line">        <span class="attr">url</span>: <span class="string">'/upload.php'</span>,</div><div class="line">        <span class="attr">data</span>: &#123;</div><div class="line">            <span class="attr">filename</span>: selected_file.name</div><div class="line">        &#125;,</div><div class="line">        <span class="attr">start</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">            <span class="built_in">console</span>.log(<span class="string">'start to get uploadToken'</span>);</div><div class="line">        &#125;,</div><div class="line">        <span class="attr">success</span>: <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">            <span class="comment">// 给表单中的参数赋值</span></div><div class="line">            form.key.value = data.key;</div><div class="line">            form.file_url.value = data.fileurl+data.key;</div><div class="line">            form.token.value = data.token;</div><div class="line"></div><div class="line">            <span class="comment">// 执行上传图片操作</span></div><div class="line">            uploadImage(selected_file)</div><div class="line">        &#125;</div><div class="line">    &#125;)</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>开始上传文件至七牛</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">uploadImage</span>(<span class="params">file</span>)</span>&#123;</div><div class="line">    ajax(&#123;</div><div class="line">        <span class="comment">// 如果</span></div><div class="line">        url: <span class="string">'http://upload.qiniu.com/'</span>,</div><div class="line">        <span class="comment">// url: 'https://up.qbox.me',</span></div><div class="line">        data: &#123;</div><div class="line">            <span class="attr">file</span>: file,</div><div class="line">            <span class="attr">key</span>: form.key.value,</div><div class="line">            <span class="string">'x:file_url'</span>: form.file_url.value,</div><div class="line">            <span class="attr">token</span>: form.token.value,</div><div class="line">        &#125;,</div><div class="line">        <span class="attr">start</span>: <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">            <span class="built_in">console</span>.log(<span class="string">'start to upload Image to Qiniu'</span>);</div><div class="line">        &#125;,</div><div class="line">        <span class="attr">success</span>: <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">            <span class="comment">// 给表单中的参数赋值</span></div><div class="line">            <span class="built_in">console</span>.log(data);</div><div class="line">            image.src = data.file_url</div><div class="line">        &#125;</div><div class="line">    &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>最终实现：<br><img src="http://ojrkbauy9.bkt.clouddn.com/973f9ed26b6ae914e6b7174c69a4bf6e" alt="最终实现"></p>
+<p><strong><a href="https://github.com/JZLeung/qiniu_upload_demo" target="_blank" rel="external">GitHub Demo</a> 欢迎吐槽</strong></p>
+</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+            <a href="/tags/qiniu/" rel="tag"># qiniu</a>
+          
+            <a href="/tags/upload/" rel="tag"># upload</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/11/17/git-hooks/" rel="next" title="使用 Git Hooks 实现自动部署PHP项目">
+                <i class="fa fa-chevron-left"></i> 使用 Git Hooks 实现自动部署PHP项目
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/04/08/payment-wxpay/" rel="prev" title="支付开发填坑记之微信支付">
+                支付开发填坑记之微信支付 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="梁生、" />
+          <p class="site-author-name" itemprop="name">梁生、</p>
+           
+              <p class="site-description motion-element" itemprop="description">《JavaScript - 入门到放弃》</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-JZ · Leung"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">梁生、</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

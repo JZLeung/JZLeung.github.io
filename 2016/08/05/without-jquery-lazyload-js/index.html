@@ -1,0 +1,738 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="javascript,no-jquery,lazyloadw," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="前端·禁地" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="Without jQuery 系列之：lazyload.js 使用原生的js实现简易的图片延时加载。">
+<meta name="keywords" content="javascript,no-jquery,lazyloadw">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Without jQuery:lazyload.js">
+<meta property="og:url" content="http://blog.leungjz.top/2016/08/05/without-jquery-lazyload-js/index.html">
+<meta property="og:site_name" content="前端·禁地">
+<meta property="og:description" content="Without jQuery 系列之：lazyload.js 使用原生的js实现简易的图片延时加载。">
+<meta property="og:updated_time" content="2017-06-29T12:45:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Without jQuery:lazyload.js">
+<meta name="twitter:description" content="Without jQuery 系列之：lazyload.js 使用原生的js实现简易的图片延时加载。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.leungjz.top/2016/08/05/without-jquery-lazyload-js/"/>
+
+
+
+
+
+  <title> Without jQuery:lazyload.js | 前端·禁地 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端·禁地</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-github">
+          <a href="https://github.com/JZLeung" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github"></i> <br />
+            
+            GitHub
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.leungjz.top/2016/08/05/without-jquery-lazyload-js/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="梁生、">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端·禁地">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Without jQuery:lazyload.js
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-05T16:32:52+08:00">
+                2016-08-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Without jQuery 系列之：lazyload.js</p>
+<p>使用原生的js实现简易的图片延时加载。<br><a id="more"></a></p>
+<h2 id="什么是延时加载？"><a href="#什么是延时加载？" class="headerlink" title="什么是延时加载？"></a>什么是延时加载？</h2><blockquote>
+<p>图片延迟加载也称 “懒加载”，通常应用于图片比较多的网页</p>
+</blockquote>
+<h2 id="为什么要使用延时加载？"><a href="#为什么要使用延时加载？" class="headerlink" title="为什么要使用延时加载？"></a>为什么要使用延时加载？</h2><p>假如一个网页中，含有大量的图片，当用户访问网页时，那么浏览器会发送n个图片的请求，加载速度会变得缓慢，性能也会下降。如果使用了延时加载，当用户访问页面的时候，只加载首屏中的图片；后续的图片只有在用户滚动时，即将要呈现给用户浏览时再按需加载，这样可以提高页面的加载速度，也提升了用户体验。而且，统一时间内更少的请求也减轻了服务器中的负担。</p>
+<h2 id="延时加载的原理"><a href="#延时加载的原理" class="headerlink" title="延时加载的原理"></a>延时加载的原理</h2><p>基本原理就是最开始时，所有图片都先放一张占位图片（如灰色背景图），真实的图片地址则放在 <code>data-src</code> 中，这么一来，网页在打开时只会加载一张图片。</p>
+<p>然后，再给 <code>window</code> 或 <code>body</code> 或者是图片主体内容绑定一个滚动监听事件，当图片出现在可视区域内，即<code>滚动距离 + 窗体可视距离 &gt; 图片到容器顶部的距离</code>时，将讲真实图片地址赋值给图片的 src，否则不加载。</p>
+<h2 id="使用原生js实现图片的延时加载"><a href="#使用原生js实现图片的延时加载" class="headerlink" title="使用原生js实现图片的延时加载"></a>使用原生js实现图片的延时加载</h2><p>延时加载需要传入的参数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> selector = options.selector || <span class="string">'img'</span>,</div><div class="line">    imgSrc = options.src || <span class="string">'data-src'</span>,</div><div class="line">    defaultSrc = options.defaultSrc || <span class="string">''</span>,</div><div class="line">    wrapper = options.wrap || body;</div></pre></td></tr></table></figure>
+<p>其中：</p>
+<ul>
+<li><code>wrapper</code> ：延时加载的容器。在该容器下，所有符合图片选择器条件的图片均会延时加载。</li>
+<li><code>selector</code> ：图片选择器。表示需要延迟加载的图片的选择器，如 <code>img.lazyload-image</code> ，默认为所有的 img 标签。</li>
+<li><code>imgSrc</code> ：图片真实地址存放属性。表示图片的真实路径存放在标签的哪个属性中，默认为 <code>data-src</code>。</li>
+<li><code>defaultSrc</code> ：初始加载的图片地址，默认为空，当为空时，不处理延时加载的图片的路径，若图片本身没有路径，则显示为空。<br>获取容器中所有的图片。</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getAllImages</span>(<span class="params">selector</span>)</span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.concat.apply([], wrapper.querySelectorAll(selector));</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>该函数在容器中查找出所有需要延时加载的图片，并将 NodeList 类型的对象转换为允许使用 map 函数的数组。</p>
+<p>如果设置了初始图片地址，则加载。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">setDefault</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    images.map(<span class="function"><span class="keyword">function</span>(<span class="params">img</span>)</span>&#123;</div><div class="line">        img.src = defaultSrc;</div><div class="line">    &#125;)</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>给 window 绑定滚动事件<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">loadImage</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> nowHeight = body.scrollTop || doc.documentElement.scrollTop;</div><div class="line">    <span class="built_in">console</span>.log(nowHeight);</div><div class="line">    <span class="keyword">if</span> (images.length &gt; <span class="number">0</span>)&#123;</div><div class="line">        images.map(<span class="function"><span class="keyword">function</span>(<span class="params">img, index</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (nowHeight + winHeight &gt; img.offsetTop) &#123;</div><div class="line">                img.src = img.getAttribute(imgSrc);</div><div class="line">                images.splice(index, <span class="number">1</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">    &#125;<span class="keyword">else</span>&#123;</div><div class="line">        <span class="built_in">window</span>.onscroll = <span class="literal">null</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="built_in">window</span>.onscroll = loadImage();</div></pre></td></tr></table></figure></p>
+<p>每次滚动网页时，都会遍历所有的图片，将图片的位置与当前滚动位置作对比，当符合加载条件时，将图片的真实地址赋值给图片，并将图片从集合中移除；当所有需要延时加载的图片都加载完毕后，将滚动事件取消绑定。</p>
+<h2 id="测试是否可行"><a href="#测试是否可行" class="headerlink" title="测试是否可行"></a>测试是否可行</h2><h3 id="测试结果："><a href="#测试结果：" class="headerlink" title="测试结果："></a>测试结果：</h3><p>从chrome的网络请求图中可见，5张图片并不是在网页打开的时候就请求了，而是当滑动到某个区域时才触发加载，基本实现了图片的延时加载。<br>测试结果</p>
+<h3 id="性能调整"><a href="#性能调整" class="headerlink" title="性能调整"></a>性能调整</h3><p>上述只是简单的实现了一个延时加载的 demo，还有很多地方需要调整和完善。</p>
+<h4 id="调整-1：onscroll-函数可能会被覆盖"><a href="#调整-1：onscroll-函数可能会被覆盖" class="headerlink" title="调整 1：onscroll 函数可能会被覆盖"></a>调整 1：onscroll 函数可能会被覆盖</h4><p><strong>问题：</strong></p>
+<p>因为有时候页面需要滚动无限加载时，插件会重写 window 的 onscroll 函数，从而导致图片的延时加载滚动监听失效。</p>
+<p><strong>解决办法：</strong></p>
+<p>需要更改为将监听事件注册到 window 上，移除时只需要移除相应的事件即可。</p>
+<p><strong>调整后的代码</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">bindListener</span>(<span class="params">element, type, callback</span>)</span>&#123;</div><div class="line">    <span class="keyword">if</span> (element.addEventListener) &#123;</div><div class="line">        element.addEventListener(type, callback);</div><div class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span> (element.attachEvent) &#123;</div><div class="line">        <span class="comment">//兼容至 IE8</span></div><div class="line">        element.attachEvent(<span class="string">'on'</span>+type, callback)</div><div class="line">    &#125;<span class="keyword">else</span>&#123;</div><div class="line">        element[<span class="string">'on'</span>+type] = callback;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">removeListener</span>(<span class="params">element, type, callback</span>)</span>&#123;</div><div class="line">    <span class="keyword">if</span> (element.removeEventListener) &#123;</div><div class="line">        element.removeEventListener(type, callback);</div><div class="line">    &#125;<span class="keyword">else</span> <span class="keyword">if</span> (element.detachEvent) &#123;</div><div class="line">        element.detachEvent(<span class="string">'on'</span>+type, callback)</div><div class="line">    &#125;<span class="keyword">else</span>&#123;</div><div class="line">        element[<span class="string">'on'</span>+type] = callback;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">loadImage</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> nowHeight = body.scrollTop || doc.documentElement.scrollTop;</div><div class="line">    <span class="built_in">console</span>.log(nowHeight);</div><div class="line">    <span class="keyword">if</span> (images.length &gt; <span class="number">0</span>)&#123;</div><div class="line">        images.map(<span class="function"><span class="keyword">function</span>(<span class="params">img, index</span>) </span>&#123;</div><div class="line">            <span class="keyword">if</span> (nowHeight + winHeight &gt; img.offsetTop) &#123;</div><div class="line">                img.src = img.getAttribute(imgSrc);</div><div class="line">                images.splice(index, <span class="number">1</span>);</div><div class="line">            &#125;</div><div class="line">        &#125;)</div><div class="line">    &#125;<span class="keyword">else</span>&#123;</div><div class="line">        <span class="comment">//解绑滚动事件</span></div><div class="line">        removeListener(<span class="built_in">window</span>, <span class="string">'scroll'</span>, loadImage)</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">//绑定滚动事件</span></div><div class="line">bindListener(<span class="built_in">window</span>, <span class="string">'scroll'</span>, loadImage)</div></pre></td></tr></table></figure>
+<h4 id="调整2：滚动时的回调函数执行次数太多"><a href="#调整2：滚动时的回调函数执行次数太多" class="headerlink" title="调整2：滚动时的回调函数执行次数太多"></a>调整2：滚动时的回调函数执行次数太多</h4><p><strong>问题</strong></p>
+<p>在本次测试中，从动图最后可以看到，当滚动网页时，loadImage 函数执行了非常多次，滚轮每向下滚动 100px 基本上就要执行 10 次左右的 loadImage，若处理函数稍微复杂，响应速度跟不上触发频率，则会造成浏览器的卡顿甚至假死，影响用户体验。</p>
+<p><strong>解决办法</strong></p>
+<p>使用 <code>throttle</code> 控制触发频率，让浏览器有更多的时间间隔去执行相应操作，减少页面抖动。</p>
+<p><strong>调整后的代码：</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//参考 `underscore` 的源码</span></div><div class="line"><span class="keyword">var</span> throttle = <span class="function"><span class="keyword">function</span>(<span class="params">func, wait, options</span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> context, args, result;</div><div class="line">    <span class="keyword">var</span> timeout = <span class="literal">null</span>;</div><div class="line">    <span class="comment">// 上次执行时间点</span></div><div class="line">    <span class="keyword">var</span> previous = <span class="number">0</span>;</div><div class="line">    <span class="keyword">if</span> (!options) options = &#123;&#125;;</div><div class="line">    <span class="comment">// 延迟执行函数</span></div><div class="line">    <span class="keyword">var</span> later = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="comment">// 若设定了开始边界不执行选项，上次执行时间始终为0</span></div><div class="line">        previous = options.leading === <span class="literal">false</span> ? <span class="number">0</span> : _now();</div><div class="line">        timeout = <span class="literal">null</span>;</div><div class="line">        result = func.apply(context, args);</div><div class="line">        <span class="keyword">if</span> (!timeout) context = args = <span class="literal">null</span>;</div><div class="line">    &#125;;</div><div class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> now = _now();</div><div class="line">        <span class="comment">// 首次执行时，如果设定了开始边界不执行选项，将上次执行时间设定为当前时间。</span></div><div class="line">        <span class="keyword">if</span> (!previous &amp;&amp; options.leading === <span class="literal">false</span>) previous = now;</div><div class="line">        <span class="comment">// 延迟执行时间间隔</span></div><div class="line">        <span class="keyword">var</span> remaining = wait - (now - previous);</div><div class="line">        context = <span class="keyword">this</span>;</div><div class="line">        args = <span class="built_in">arguments</span>;</div><div class="line">        <span class="comment">// 延迟时间间隔remaining小于等于0，表示上次执行至此所间隔时间已经超过一个时间窗口</span></div><div class="line">        <span class="comment">// remaining大于时间窗口wait，表示客户端系统时间被调整过</span></div><div class="line">        <span class="keyword">if</span> (remaining &lt;= <span class="number">0</span> || remaining &gt; wait) &#123;</div><div class="line">            clearTimeout(timeout);</div><div class="line">            timeout = <span class="literal">null</span>;</div><div class="line">            previous = now;</div><div class="line">            result = func.apply(context, args);</div><div class="line">            <span class="keyword">if</span> (!timeout) context = args = <span class="literal">null</span>;</div><div class="line">            <span class="comment">//如果延迟执行不存在，且没有设定结尾边界不执行选项</span></div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!timeout &amp;&amp; options.trailing !== <span class="literal">false</span>) &#123;</div><div class="line">            timeout = setTimeout(later, remaining);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;;</div><div class="line">&#125;;</div><div class="line"><span class="comment">//在调用高频率触发函数处使用 throttle 控制频率在 次/wait</span></div><div class="line"><span class="keyword">var</span> load = throttle(loadImage, <span class="number">250</span>);</div><div class="line"><span class="comment">//绑定滚动事件</span></div><div class="line">bindListener(<span class="built_in">window</span>, <span class="string">'scroll'</span>, load);</div><div class="line"><span class="comment">//解绑滚动事件</span></div><div class="line">removeListener(<span class="built_in">window</span>, <span class="string">'scroll'</span>, load)</div></pre></td></tr></table></figure></p>
+<h3 id="调整后的测试"><a href="#调整后的测试" class="headerlink" title="调整后的测试"></a>调整后的测试</h3><p>从动图可见，在滚动的时候，调用判断的回调的次数少了很多。而且也不影响图片的延时加载。</p>
+<p>调整后的测试结果</p>
+<p>封装为插件形式<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div></pre></td><td class="code"><pre><div class="line">;(<span class="function"><span class="keyword">function</span>(<span class="params">window, undefined</span>)</span>&#123;</div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">_now</span>(<span class="params"></span>)</span>&#123;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Date</span>().getTime();</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//辅助函数</span></div><div class="line">    <span class="keyword">var</span> throttle = <span class="function"><span class="keyword">function</span>(<span class="params">func, wait, options</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> context, args, result;</div><div class="line">        <span class="keyword">var</span> timeout = <span class="literal">null</span>;</div><div class="line">        <span class="comment">// 上次执行时间点</span></div><div class="line">        <span class="keyword">var</span> previous = <span class="number">0</span>;</div><div class="line">        <span class="keyword">if</span> (!options) options = &#123;&#125;;</div><div class="line">        <span class="comment">// 延迟执行函数</span></div><div class="line">        <span class="keyword">var</span> later = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">            <span class="comment">// 若设定了开始边界不执行选项，上次执行时间始终为0</span></div><div class="line">            previous = options.leading === <span class="literal">false</span> ? <span class="number">0</span> : _now();</div><div class="line">            timeout = <span class="literal">null</span>;</div><div class="line">            result = func.apply(context, args);</div><div class="line">            <span class="keyword">if</span> (!timeout) context = args = <span class="literal">null</span>;</div><div class="line">        &#125;;</div><div class="line">        <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</div><div class="line">            <span class="keyword">var</span> now = _now();</div><div class="line">            <span class="comment">// 首次执行时，如果设定了开始边界不执行选项，将上次执行时间设定为当前时间。</span></div><div class="line">            <span class="keyword">if</span> (!previous &amp;&amp; options.leading === <span class="literal">false</span>) previous = now;</div><div class="line">            <span class="comment">// 延迟执行时间间隔</span></div><div class="line">            <span class="keyword">var</span> remaining = wait - (now - previous);</div><div class="line">            context = <span class="keyword">this</span>;</div><div class="line">            args = <span class="built_in">arguments</span>;</div><div class="line">            <span class="comment">// 延迟时间间隔remaining小于等于0，表示上次执行至此所间隔时间已经超过一个时间窗口</span></div><div class="line">            <span class="comment">// remaining大于时间窗口wait，表示客户端系统时间被调整过</span></div><div class="line">            <span class="keyword">if</span> (remaining &lt;= <span class="number">0</span> || remaining &gt; wait) &#123;</div><div class="line">                clearTimeout(timeout);</div><div class="line">                timeout = <span class="literal">null</span>;</div><div class="line">                previous = now;</div><div class="line">                result = func.apply(context, args);</div><div class="line">                <span class="keyword">if</span> (!timeout) context = args = <span class="literal">null</span>;</div><div class="line">                <span class="comment">//如果延迟执行不存在，且没有设定结尾边界不执行选项</span></div><div class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!timeout &amp;&amp; options.trailing !== <span class="literal">false</span>) &#123;</div><div class="line">                timeout = setTimeout(later, remaining);</div><div class="line">            &#125;</div><div class="line">            <span class="keyword">return</span> result;</div><div class="line">        &#125;;</div><div class="line">    &#125;;</div><div class="line">    <span class="comment">//分析参数</span></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">extend</span>(<span class="params">custom, src</span>)</span>&#123;</div><div class="line">        <span class="keyword">var</span> result = &#123;&#125;;</div><div class="line">        <span class="keyword">for</span>(<span class="keyword">var</span> attr <span class="keyword">in</span> src)&#123;</div><div class="line">            result[attr] = custom[attr] || src[attr]</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> result;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//绑定事件，兼容处理</span></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">bindListener</span>(<span class="params">element, type, callback</span>)</span>&#123;</div><div class="line">        <span class="keyword">if</span> (element.addEventListener) &#123;</div><div class="line">            element.addEventListener(type, callback);</div><div class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span> (element.attachEvent) &#123;</div><div class="line">            element.attachEvent(<span class="string">'on'</span>+type, callback)</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            element[<span class="string">'on'</span>+type] = callback;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//解绑事件，兼容处理</span></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">removeListener</span>(<span class="params">element, type, callback</span>)</span>&#123;</div><div class="line">        <span class="keyword">if</span> (element.removeEventListener) &#123;</div><div class="line">            element.removeEventListener(type, callback);</div><div class="line">        &#125;<span class="keyword">else</span> <span class="keyword">if</span> (element.detachEvent) &#123;</div><div class="line">            element.detachEvent(<span class="string">'on'</span>+type, callback)</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            element[<span class="string">'on'</span>+type] = <span class="literal">null</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//判断一个元素是否为DOM对象，兼容处理</span></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">isElement</span>(<span class="params">o</span>) </span>&#123;</div><div class="line">        <span class="keyword">if</span>(o &amp;&amp; (<span class="keyword">typeof</span> HTMLElement===<span class="string">"function"</span> || <span class="keyword">typeof</span> HTMLElement===<span class="string">"object"</span>) &amp;&amp; o <span class="keyword">instanceof</span> HTMLElement)&#123;</div><div class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="keyword">return</span> (o &amp;&amp; o.nodeType &amp;&amp; o.nodeType===<span class="number">1</span>) ? <span class="literal">true</span> : <span class="literal">false</span>;</div><div class="line">        &#125;;</div><div class="line">    &#125;;</div><div class="line">    <span class="keyword">var</span> lazyload = <span class="function"><span class="keyword">function</span>(<span class="params">options</span>)</span>&#123;</div><div class="line">        <span class="comment">//辅助变量</span></div><div class="line">        <span class="keyword">var</span> images = [],</div><div class="line">            doc = <span class="built_in">document</span>,</div><div class="line">            body = <span class="built_in">document</span>.body,</div><div class="line">            winHeight = screen.availHeight;</div><div class="line">        <span class="comment">//参数配置</span></div><div class="line">        <span class="keyword">var</span> opt = extend(options, &#123;</div><div class="line">            <span class="attr">wrapper</span>: body,</div><div class="line">            <span class="attr">selector</span>: <span class="string">'img'</span>,</div><div class="line">            <span class="attr">imgSrc</span>: <span class="string">'data-src'</span>,</div><div class="line">            <span class="attr">defaultSrc</span>: <span class="string">''</span></div><div class="line">        &#125;);</div><div class="line">        <span class="keyword">if</span> (!isElement(opt.wrapper)) &#123;</div><div class="line">            <span class="built_in">console</span>.log(<span class="string">'not an HTMLElement'</span>);</div><div class="line">            <span class="keyword">if</span>(<span class="keyword">typeof</span> opt.wrapper != <span class="string">'string'</span>)&#123;</div><div class="line">                <span class="comment">//若 wrapper 不是DOM对象 或者不是字符串，报错</span></div><div class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'wrapper should be an HTMLElement or a selector string'</span>);</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                <span class="comment">//选择器</span></div><div class="line">                opt.wrapper = doc.querySelector(opt.wrapper) || body;</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//查找所有需要延时加载的图片</span></div><div class="line">        <span class="function"><span class="keyword">function</span> <span class="title">getAllImages</span>(<span class="params">selector</span>)</span>&#123;</div><div class="line">            <span class="keyword">return</span> <span class="built_in">Array</span>.prototype.concat.apply([], opt.wrapper.querySelectorAll(selector));</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//设置默认显示图片</span></div><div class="line">        <span class="function"><span class="keyword">function</span> <span class="title">setDefault</span>(<span class="params"></span>)</span>&#123;</div><div class="line">            images.map(<span class="function"><span class="keyword">function</span>(<span class="params">img</span>)</span>&#123;</div><div class="line">                img.src = opt.defaultSrc;</div><div class="line">            &#125;)</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//加载图片</span></div><div class="line">        <span class="function"><span class="keyword">function</span> <span class="title">loadImage</span>(<span class="params"></span>)</span>&#123;</div><div class="line">            <span class="keyword">var</span> nowHeight = body.scrollTop || doc.documentElement.scrollTop;</div><div class="line">            <span class="built_in">console</span>.log(nowHeight);</div><div class="line">            <span class="keyword">if</span> (images.length &gt; <span class="number">0</span>)&#123;</div><div class="line">                images.map(<span class="function"><span class="keyword">function</span>(<span class="params">img, index</span>) </span>&#123;</div><div class="line">                    <span class="keyword">if</span> (nowHeight + winHeight &gt; img.offsetTop) &#123;</div><div class="line">                        img.src = img.getAttribute(opt.imgSrc);</div><div class="line">                        <span class="built_in">console</span>.log(<span class="string">'loaded'</span>);</div><div class="line">                        images.splice(index, <span class="number">1</span>);</div><div class="line">                    &#125;</div><div class="line">                &#125;)</div><div class="line">            &#125;<span class="keyword">else</span>&#123;</div><div class="line">                removeListener(<span class="built_in">window</span>, <span class="string">'scroll'</span>, load)</div><div class="line">            &#125;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">var</span> load = throttle(loadImage, <span class="number">250</span>);</div><div class="line">        <span class="keyword">return</span> (<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">            images = getAllImages(opt.selector);</div><div class="line">            bindListener(<span class="built_in">window</span>, <span class="string">'scroll'</span>, load);</div><div class="line">            opt.defaultSrc &amp;&amp; setDefault()</div><div class="line">            loadImage();</div><div class="line">        &#125;)()</div><div class="line">    &#125;;</div><div class="line">    <span class="built_in">window</span>.lazyload = lazyload;</div><div class="line">&#125;)(<span class="built_in">window</span>);</div></pre></td></tr></table></figure></p>
+<p>上述代码拷贝到项目中即可使用，使用方式：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//使用默认参数</span></div><div class="line"><span class="keyword">new</span> lazyload();</div><div class="line"><span class="comment">//使用自定义参数</span></div><div class="line"><span class="keyword">new</span> lazyload(&#123;</div><div class="line">    <span class="attr">wrapper</span>: <span class="string">'.article-content'</span>,</div><div class="line">    <span class="attr">selector</span>: <span class="string">'.image'</span>,</div><div class="line">    <span class="attr">src</span>: <span class="string">'data-image'</span>,</div><div class="line">    <span class="attr">defaultSrc</span>: <span class="string">'example.com/static/images/default.png'</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>若在 IE8 中使用，没有 map 函数时，请在引用插件前加入下列处理 map 函数兼容性的代码：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// 实现 ECMA-262, Edition 5, 15.4.4.19</span></div><div class="line"><span class="comment">// 参考: http://es5.github.com/#x15.4.4.19</span></div><div class="line"><span class="keyword">if</span> (!<span class="built_in">Array</span>.prototype.map) &#123;</div><div class="line">    <span class="built_in">Array</span>.prototype.map = <span class="function"><span class="keyword">function</span>(<span class="params">callback, thisArg</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> T, A, k;</div><div class="line">        <span class="keyword">if</span> (<span class="keyword">this</span> == <span class="literal">null</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(<span class="string">" this is null or not defined"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 1. 将O赋值为调用map方法的数组.</span></div><div class="line">        <span class="keyword">var</span> O = <span class="built_in">Object</span>(<span class="keyword">this</span>);</div><div class="line">        <span class="comment">// 2.将len赋值为数组O的长度.</span></div><div class="line">        <span class="keyword">var</span> len = O.length &gt;&gt;&gt; <span class="number">0</span>;</div><div class="line">        <span class="comment">// 3.如果callback不是函数,则抛出TypeError异常.</span></div><div class="line">        <span class="keyword">if</span> (<span class="built_in">Object</span>.prototype.toString.call(callback) != <span class="string">"[object Function]"</span>) &#123;</div><div class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">TypeError</span>(callback + <span class="string">" is not a function"</span>);</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 4. 如果参数thisArg有值,则将T赋值为thisArg;否则T为undefined.</span></div><div class="line">        <span class="keyword">if</span> (thisArg) &#123;</div><div class="line">            T = thisArg;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 5. 创建新数组A,长度为原数组O长度len</span></div><div class="line">        A = <span class="keyword">new</span> <span class="built_in">Array</span>(len);</div><div class="line">        <span class="comment">// 6. 将k赋值为0</span></div><div class="line">        k = <span class="number">0</span>;</div><div class="line">        <span class="comment">// 7. 当 k &lt; len 时,执行循环.</span></div><div class="line">        <span class="keyword">while</span> (k &lt; len) &#123;</div><div class="line">            <span class="keyword">var</span> kValue, mappedValue;</div><div class="line">            <span class="comment">//遍历O,k为原数组索引</span></div><div class="line">            <span class="keyword">if</span> (k <span class="keyword">in</span> O) &#123;</div><div class="line">                <span class="comment">//kValue为索引k对应的值.</span></div><div class="line">                kValue = O[k];</div><div class="line">                <span class="comment">// 执行callback,this指向T,参数有三个.分别是kValue:值,k:索引,O:原数组.</span></div><div class="line">                mappedValue = callback.call(T, kValue, k, O);</div><div class="line">                <span class="comment">// 返回值添加到新数组A中.</span></div><div class="line">                A[k] = mappedValue;</div><div class="line">            &#125;</div><div class="line">            <span class="comment">// k自增1</span></div><div class="line">            k++;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">// 8. 返回新数组A</span></div><div class="line">        <span class="keyword">return</span> A;</div><div class="line">    &#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>Enjoy!!!</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+            <a href="/tags/no-jquery/" rel="tag"># no-jquery</a>
+          
+            <a href="/tags/lazyloadw/" rel="tag"># lazyloadw</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/03/restify-demo/" rel="next" title="使用 restify 搭建 RESTful API">
+                <i class="fa fa-chevron-left"></i> 使用 restify 搭建 RESTful API
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/13/mongoose-guide/" rel="prev" title="Mongoose - 在 NodeJs 中优雅地建立 MongoDb 对象模型">
+                Mongoose - 在 NodeJs 中优雅地建立 MongoDb 对象模型 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="梁生、" />
+          <p class="site-author-name" itemprop="name">梁生、</p>
+           
+              <p class="site-description motion-element" itemprop="description">《JavaScript - 入门到放弃》</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是延时加载？"><span class="nav-number">1.</span> <span class="nav-text">什么是延时加载？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要使用延时加载？"><span class="nav-number">2.</span> <span class="nav-text">为什么要使用延时加载？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#延时加载的原理"><span class="nav-number">3.</span> <span class="nav-text">延时加载的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用原生js实现图片的延时加载"><span class="nav-number">4.</span> <span class="nav-text">使用原生js实现图片的延时加载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试是否可行"><span class="nav-number">5.</span> <span class="nav-text">测试是否可行</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#测试结果："><span class="nav-number">5.1.</span> <span class="nav-text">测试结果：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能调整"><span class="nav-number">5.2.</span> <span class="nav-text">性能调整</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#调整-1：onscroll-函数可能会被覆盖"><span class="nav-number">5.2.1.</span> <span class="nav-text">调整 1：onscroll 函数可能会被覆盖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#调整2：滚动时的回调函数执行次数太多"><span class="nav-number">5.2.2.</span> <span class="nav-text">调整2：滚动时的回调函数执行次数太多</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调整后的测试"><span class="nav-number">5.3.</span> <span class="nav-text">调整后的测试</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-JZ · Leung"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">梁生、</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

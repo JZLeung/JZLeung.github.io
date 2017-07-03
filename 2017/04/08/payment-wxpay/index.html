@@ -1,0 +1,828 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="php,微信支付,微信,坑," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="前端·禁地" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="微信支付，支持的支付方式比较多：有扫码支付，刷卡支付，APP支付和公众号支付。其中，APP和网站上最常用的就是APP支付和公众号支付。前者集成在APP中，后者主要是为微信用户提供了另一种支付方式（需要在微信的内置浏览器中打开页面，再调起微信支付）。">
+<meta name="keywords" content="php,微信支付,微信,坑">
+<meta property="og:type" content="article">
+<meta property="og:title" content="支付开发填坑记之微信支付">
+<meta property="og:url" content="http://blog.leungjz.top/2017/04/08/payment-wxpay/index.html">
+<meta property="og:site_name" content="前端·禁地">
+<meta property="og:description" content="微信支付，支持的支付方式比较多：有扫码支付，刷卡支付，APP支付和公众号支付。其中，APP和网站上最常用的就是APP支付和公众号支付。前者集成在APP中，后者主要是为微信用户提供了另一种支付方式（需要在微信的内置浏览器中打开页面，再调起微信支付）。">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/payment-wxpay-app-1.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/snipaste_20170408_153159.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/payment-wxpay-web-1.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/payment-wxpay-app-2.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/payment-wxpay-web-2.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/payment-wxpay-notify-web.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/wxpay-refund-3.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/wxpay-refund-4.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/wxpay-refund-5.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/wxpay-refund-6.png">
+<meta property="og:updated_time" content="2017-06-29T12:45:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="支付开发填坑记之微信支付">
+<meta name="twitter:description" content="微信支付，支持的支付方式比较多：有扫码支付，刷卡支付，APP支付和公众号支付。其中，APP和网站上最常用的就是APP支付和公众号支付。前者集成在APP中，后者主要是为微信用户提供了另一种支付方式（需要在微信的内置浏览器中打开页面，再调起微信支付）。">
+<meta name="twitter:image" content="http://ojrkbauy9.bkt.clouddn.com/payment-wxpay-app-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.leungjz.top/2017/04/08/payment-wxpay/"/>
+
+
+
+
+
+  <title> 支付开发填坑记之微信支付 | 前端·禁地 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端·禁地</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-github">
+          <a href="https://github.com/JZLeung" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github"></i> <br />
+            
+            GitHub
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.leungjz.top/2017/04/08/payment-wxpay/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="梁生、">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端·禁地">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                支付开发填坑记之微信支付
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-04-08T15:15:18+08:00">
+                2017-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>微信支付，支持的支付方式比较多：有扫码支付，刷卡支付，APP支付和公众号支付。其中，APP和网站上最常用的就是APP支付和公众号支付。前者集成在APP中，后者主要是为微信用户提供了另一种支付方式（需要在微信的内置浏览器中打开页面，再调起微信支付）。<br><a id="more"></a></p>
+<p>微信支付，支持的支付方式比较多：有扫码支付，刷卡支付，APP支付和公众号支付。其中，APP和网站上最常用的就是APP支付和公众号支付。前者集成在APP中，后者主要是为微信用户提供了另一种支付方式（需要在微信的内置浏览器中打开页面，再调起微信支付）。</p>
+<p>同样的，微信的APP支付和支付宝的APP支付也是很简单：</p>
+<h1 id="APP支付"><a href="#APP支付" class="headerlink" title="APP支付"></a>APP支付</h1><p>商户系统和微信支付系统主要交互说明：</p>
+<blockquote>
+<p>步骤1：用户在商户APP中选择商品，提交订单，选择微信支付。</p>
+<p>步骤2：商户后台收到用户支付单，调用微信<strong>支付统一</strong>下单接口。参见<a href="https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1" target="_blank" rel="external">【统一下单API】</a>。</p>
+<p>步骤3：统一下单接口返回正常的<strong>prepay_id</strong>，再按签名规范重新生成签名后，将数据传输给APP。参与签名的字段名为<code>appId</code>，<code>partnerId</code>，<code>prepayId</code>，<code>nonceStr</code>，<code>timeStamp</code>，<code>package</code>。<strong>注意：package的值格式为Sign=WXPay</strong></p>
+<p>步骤4：商户APP调起微信支付。</p>
+<p>步骤5：商户后台接收支付通知。</p>
+<p>步骤6：商户后台查询支付结果。</p>
+</blockquote>
+<p>这里主要的还是后台干活（获取 <code>prepay_id</code>，生成随机字符串 <code>nonceStr</code> 和时间戳 <code>timeStamp</code> ，<code>appId</code> 和 <code>partnerId</code> 均能在后台管理中查看。）</p>
+<p>后台的步骤也很简洁，就是上述中的步骤1，2。</p>
+<ol>
+<li><p>获取 <code>prepayId</code>：</p>
+<ol>
+<li>设置获取 <code>prepayId</code> 所需参数。</li>
+</ol>
+<p>此处需要调用微信的统一下单接口。这个过程，<a href="https://pay.weixin.qq.com/wiki/doc/api/app/app.php?chapter=9_1" target="_blank" rel="external">官方文档</a>已经写得十分之详细了，包括调用的接口API地址，需要传递的参数（必要和非必要的参数），还有返回结果也写得很清楚。</p>
+<p>以下是我在实际项目开发中传入的参数。<br><img src="http://ojrkbauy9.bkt.clouddn.com/payment-wxpay-app-1.png" alt="项目中传入的参数"></p>
+<p><img src="http://ojrkbauy9.bkt.clouddn.com/snipaste_20170408_153159.png" alt="参数解析"></p>
+<ol>
+<li>签名。</li>
+</ol>
+<p>签名都差不多，都是先将所有的带签名的参数进行字典排序。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ksort($data);</div></pre></td></tr></table></figure>
+<p>然后将参数以 <code>{key}={value}</code> 的组合形式，用 <code>&amp;</code> 连接。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">$a = <span class="keyword">array</span>();</div><div class="line"><span class="keyword">foreach</span> ($data <span class="keyword">as</span> $k =&gt; $v) &#123;</div><div class="line">    <span class="keyword">if</span> ((string) $v === <span class="string">''</span>) &#123;</div><div class="line">        <span class="keyword">continue</span>;</div><div class="line">    &#125;</div><div class="line">    $a[] = <span class="string">"&#123;$k&#125;=&#123;$v&#125;"</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">$a = implode(<span class="string">'&amp;'</span>, $a);</div></pre></td></tr></table></figure>
+<p>最后拼上 <code>&amp;key={Your apiKey}</code> ，然后对整串字符串进行MD5加密即可。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$sign = strtoupper(md5($a));</div></pre></td></tr></table></figure>
+</li>
+<li><p>将拼好的数据，以 <code>XML</code> 的格式发送给微信，请求 <code>prepayId</code></p>
+<p>没错，就是要转成 <code>XML</code> 格式再发送。</p>
+<p>但是，这个XML格式很简单，只需要进行简单的拼接即可：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">arrayToXml</span><span class="params">(array $data)</span></span></div><div class="line">&#123;</div><div class="line">    $xml = <span class="string">"&lt;xml&gt;"</span>;</div><div class="line">    <span class="keyword">foreach</span> ($data <span class="keyword">as</span> $k =&gt; $v) &#123;</div><div class="line">        <span class="keyword">if</span> (is_numeric($v)) &#123;</div><div class="line">            $xml .= <span class="string">"&lt;&#123;$k&#125;&gt;&#123;$v&#125;&lt;/&#123;$k&#125;&gt;"</span>;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;</div><div class="line">            $xml .= <span class="string">"&lt;&#123;$k&#125;&gt;&lt;![CDATA[&#123;$v&#125;]]&gt;&lt;/&#123;$k&#125;&gt;"</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    $xml .= <span class="string">"&lt;/xml&gt;"</span>;</div><div class="line">    <span class="keyword">return</span> $xml;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>参数值用XML转义即可，CDATA标签用于说明数据不被XML解析器解析。。</strong></p>
+<p>然后请求统一下单API即可（url = <code>https://api.mch.weixin.qq.com/pay/unifiedorder</code>）</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">$ch = curl_init();</div><div class="line">curl_setopt($ch, CURLOPT_TIMEOUT, <span class="number">30</span>);</div><div class="line">curl_setopt($ch, CURLOPT_URL, $url);</div><div class="line">curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, <span class="keyword">FALSE</span>);</div><div class="line">curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, <span class="keyword">FALSE</span>);</div><div class="line">curl_setopt($ch, CURLOPT_HEADER, <span class="keyword">FALSE</span>);</div><div class="line">curl_setopt($ch, CURLOPT_RETURNTRANSFER, <span class="keyword">TRUE</span>);</div><div class="line">curl_setopt($ch, CURLOPT_POST, <span class="keyword">TRUE</span>);</div><div class="line">curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);</div><div class="line">$response = curl_exec($ch);</div><div class="line"><span class="keyword">if</span> (!$response) &#123;</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="keyword">Exception</span>(<span class="string">'CURL Error: '</span> . curl_errno($ch));</div><div class="line">&#125;</div><div class="line">curl_close($ch);</div></pre></td></tr></table></figure>
+<p>请求回来的数据也为XML格式，只需要简单做下处理，转换成array即可：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">xmlToArray</span><span class="params">($xml)</span></span>&#123;</div><div class="line">    <span class="keyword">return</span> json_decode(json_encode(simplexml_load_string($xml, <span class="string">'SimpleXMLElement'</span>, LIBXML_NOCDATA)), <span class="keyword">true</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果返回值中的 <code>return_code</code> 和 <code>result_code</code> 都为 <code>SUCCESS</code> 的时候会返回 交易类型 <code>trade_type</code> 和 预支付交易会话标识 <code>prepayId</code> 。到这里，我们就可以获取到 <code>prepayId</code>。</p>
+</li>
+<li><p>将获取的 <code>prepayId</code> 与其他参数拼接，返回给APP即可。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">$params = <span class="keyword">array</span>();</div><div class="line"><span class="comment">//  商户号</span></div><div class="line">$params[<span class="string">'appid'</span>] = <span class="keyword">$this</span>-&gt;config-&gt;appId;</div><div class="line"><span class="comment">//  时间戳</span></div><div class="line">$params[<span class="string">'timestamp'</span>] = <span class="string">''</span> . time();</div><div class="line"><span class="comment">//  随机字符串</span></div><div class="line">$params[<span class="string">'noncestr'</span>] = md5(uniqid(mt_rand(), <span class="keyword">true</span>));</div><div class="line"><span class="comment">//  固定为 'Sign=WXPay'</span></div><div class="line">$params[<span class="string">'package'</span>] = <span class="string">'Sign=WXPay'</span>;</div><div class="line"><span class="comment">//  步骤3获取的预支付交易会话标识</span></div><div class="line">$params[<span class="string">'prepayid'</span>] = $prepayId;</div><div class="line"><span class="comment">//  合作伙伴id</span></div><div class="line">$params[<span class="string">'partnerid'</span>] = <span class="keyword">$this</span>-&gt;config-&gt;partnerId;</div><div class="line"><span class="comment">//  步骤2生成的签名。</span></div><div class="line">$params[<span class="string">'sign'</span>] = <span class="keyword">$this</span>-&gt;sign($params);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>微信APP支付，后台需要干的活到这里就暂时结束了（因为还有支付成功后的异步通知商户后面再讲）</p>
+<hr>
+<h1 id="jsapi支付"><a href="#jsapi支付" class="headerlink" title="jsapi支付"></a>jsapi支付</h1><p>下面就是web版的微信支付（公司项目是在微信浏览器内，选择微信支付后，在微信中调起的微信支付）<br><img src="http://ojrkbauy9.bkt.clouddn.com/payment-wxpay-web-1.png" alt="微信支付"></p>
+<p>web版微信支付的步骤和APP的大同小异，也是现获取 <code>prepayId</code> ，再在页面中，调用jsapi进行支付。</p>
+<p>但是，此处有2个坑</p>
+<h3 id="坑1：-支付时出现-appid-and-openid-not-match-的报错"><a href="#坑1：-支付时出现-appid-and-openid-not-match-的报错" class="headerlink" title="坑1： 支付时出现 appid and openid not match 的报错"></a>坑1： 支付时出现 <code>appid and openid not match</code> 的报错</h3><p>原因非常的简单，就是支付时所获取的 <code>openid</code> 在并不属于支付的商户。<br>这个 <code>openid</code> 为微信用户在商户对应appid下的唯一标识。也就是说，必须根据支付的商户的 appid 去获取用户的 <code>openid</code> 。</p>
+<p>因为业务逻辑需要，项目中用于<em>微信登录用的公众号A</em>与<em>用于支付的公众号B</em>（其实还和开放平台用于APP支付的 <code>appId</code> 也是不一样的）是不一样的，虽然所获取unionid是一致，但是 <code>openid</code> 是不！一！样！的！所以，在获取 <code>openid</code> 时，需要使用当前支付时所用到的 appid 去请求用户的 <code>openid</code> ，同时，请求 openid 后的回调也必须是 支付商户 后台所设置好的回调地址，要不然就会报 <code>redirect_uri 参数错误</code> 的错误。</p>
+<h3 id="坑2：-参数名大小写不一致。"><a href="#坑2：-参数名大小写不一致。" class="headerlink" title="坑2： 参数名大小写不一致。"></a>坑2： 参数名大小写不一致。</h3><p><img src="http://ojrkbauy9.bkt.clouddn.com/payment-wxpay-app-2.png" alt="APP支付的参数"></p>
+<p>↑ APP支付的参数</p>
+<p><img src="http://ojrkbauy9.bkt.clouddn.com/payment-wxpay-web-2.png" alt="web支付的参数"></p>
+<p>↑ web支付的参数</p>
+<p>仔细看看划横线的地方。没错，app中的参数的key全是小写，web支付中的key则为驼峰命名方式。而且，签名方式 <code>signType</code> 是必填的， 签名的字段也变成了 <code>paySign</code>，其中 <code>package</code> 的值也是不一样，APP支付是固定的值，web支付则为 <code>prepayId</code>，这也要注意。当然，<a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=7_7&amp;index=6" target="_blank" rel="external">官方文档</a>也是很详细的说明，但是需要细心观察（所以说嘛，还是直接拷贝必填项最保险了2333）。</p>
+<p>拿到所有参数后，就可以在页面中发起微信支付的请求了。</p>
+<p>代码可以直接使用官方提供的js代码<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">onBridgeReady</span>(<span class="params"></span>)</span>&#123;</div><div class="line">   WeixinJSBridge.invoke(</div><div class="line">       <span class="string">'getBrandWCPayRequest'</span>, YOUR_PARAMS,</div><div class="line">       <span class="function"><span class="keyword">function</span>(<span class="params">res</span>)</span>&#123;     </div><div class="line">           <span class="keyword">if</span>(res.err_msg == <span class="string">"get_brand_wcpay_request:ok"</span> ) &#123;</div><div class="line">               <span class="comment">// success_callback</span></div><div class="line">           &#125;     <span class="comment">// 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 </span></div><div class="line">       &#125;</div><div class="line">   ); </div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span> (<span class="keyword">typeof</span> WeixinJSBridge == <span class="string">"undefined"</span>)&#123;</div><div class="line">   <span class="keyword">if</span>( <span class="built_in">document</span>.addEventListener )&#123;</div><div class="line">       <span class="built_in">document</span>.addEventListener(<span class="string">'WeixinJSBridgeReady'</span>, onBridgeReady, <span class="literal">false</span>);</div><div class="line">   &#125;<span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">document</span>.attachEvent)&#123;</div><div class="line">       <span class="built_in">document</span>.attachEvent(<span class="string">'WeixinJSBridgeReady'</span>, onBridgeReady); </div><div class="line">       <span class="built_in">document</span>.attachEvent(<span class="string">'onWeixinJSBridgeReady'</span>, onBridgeReady);</div><div class="line">   &#125;</div><div class="line">&#125;<span class="keyword">else</span>&#123;</div><div class="line">   onBridgeReady();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>其中 YOUR_PARAMS 是参数转换成json格式直接渲染至页面即可。</p>
+<p>如果参数没错的话，那么就可以顺利的调起支付窗口了。</p>
+<h3 id="坑3：-APP支付和jsapi支付不是同一个号"><a href="#坑3：-APP支付和jsapi支付不是同一个号" class="headerlink" title="坑3： APP支付和jsapi支付不是同一个号"></a>坑3： APP支付和jsapi支付不是同一个号</h3><p>APP支付是在开放平台中申请下来的，appId和apiKey都是不一样的。而jsapi支付实质就是公众号支付，是在公众平台中申请得到的。所以，在这里，需要注意一下。</p>
+<hr>
+<p>重要的来了，能体现后台的重要性的地方终于来了 — </p>
+<h1 id="支付结果的异步通知"><a href="#支付结果的异步通知" class="headerlink" title="支付结果的异步通知"></a>支付结果的异步通知</h1><p><a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_7" target="_blank" rel="external">官方文档</a>写得也很详细了（不得不说，微信的开发文档真的很清晰。很容易找到。就是没有详细的步骤区分）。</p>
+<p>首先需要申明的是：异步通知的URL是<em>必须能在公网访问</em>的，而且，必须<em>不能携带参数</em>。</p>
+<p>也就是说，<a href="http://domain.com/payment/wxpay/notify.php" target="_blank" rel="external">http://domain.com/payment/wxpay/notify.php</a> 是没问题的，但是 <a href="http://domain.com/payment/notify.php?payment_code=wxpay" target="_blank" rel="external">http://domain.com/payment/notify.php?payment_code=wxpay</a> 这样的URL是不行的。如果要想达到这种效果，要不服务器（Nginx , Apache）进行rewrite，要不在notify.php 中，手动修改 <code>$_GET</code> 中的参数。</p>
+<p>返回的数据，都是一致的：<br><img src="http://ojrkbauy9.bkt.clouddn.com/payment-wxpay-notify-web.png" alt=""></p>
+<p>这时候，商户后台拿到这些异步通知的数据进行简单的校验即可，然后修改商户中相应订单的支付状态。</p>
+<ol>
+<li><p>校验返回码是否成功</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$d = <span class="keyword">$this</span>-&gt;xmlToArray(file_get_contents(<span class="string">'php://input'</span>));</div><div class="line"><span class="keyword">if</span> (<span class="keyword">empty</span>($d)) &#123;</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="keyword">Exception</span>(<span class="keyword">__METHOD__</span>);</div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span> ($d[<span class="string">'return_code'</span>] != <span class="string">'SUCCESS'</span>) &#123;</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="keyword">Exception</span>($d[<span class="string">'return_msg'</span>]);</div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span> ($d[<span class="string">'result_code'</span>] != <span class="string">'SUCCESS'</span>) &#123;</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="keyword">Exception</span>(<span class="string">"[&#123;$d['err_code']&#125;]&#123;$d['err_code_des']&#125;"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>对返回数据进行校验</p>
+<p>和请求 <code>prepayId</code> 时处理数据的方式差不多，先取出签名 <code>sign</code>，然后除去签名后，进行字典排序，以 <code>{key}={value}</code> 的方式进行组合，并在最后加上 <code>&amp;key={apiKey}</code>得到待校验字符串，最后，将待校验字符串进行MD5加密，和签名进行比较，若一致则校验成功，并且支付成功，然后后台做相应操作。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (!<span class="keyword">$this</span>-&gt;verify($d)) &#123;</div><div class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="keyword">Exception</span>(<span class="string">"Invalid signature"</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">//  验证函数</span></div><div class="line"><span class="keyword">if</span> (<span class="keyword">empty</span>($d[<span class="string">'sign'</span>])) &#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</div><div class="line">&#125;</div><div class="line">$sign = $d[<span class="string">'sign'</span>];</div><div class="line"><span class="keyword">unset</span>($d[<span class="string">'sign'</span>]);</div><div class="line"><span class="keyword">return</span> $sign == <span class="keyword">$this</span>-&gt;sign($d);</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<h1 id="微信退款"><a href="#微信退款" class="headerlink" title="微信退款"></a>微信退款</h1><p>有支付肯定就会有退款。微信的退款操作也是很简单，而且退款速度非常快，测试时基本都是秒退。</p>
+<p>但是退款是有注意事项的：</p>
+<ol>
+<li>交易时间超过<em>一年</em>的订单无法提交退款；</li>
+<li>微信支付退款支持单笔交易分多次退款，多次退款需要提交<strong>原支付订单的商户订单号</strong>和设置<strong>不同的退款单号</strong>。总退款金额不能超过用户实际支付金额。<strong>一笔退款失败后重新提交，请不要更换退款单号，请使用原商户退款单号</strong>。</li>
+<li><strong>退款请求需要证书</strong>。</li>
+</ol>
+<p>【证书获取方式：】</p>
+<blockquote>
+<p>微信支付接口中，涉及资金回滚的接口会使用到商户证书，包括退款、撤销接口。商家在申请微信支付成功后，收到的相应邮件后，可以按照指引下载API证书，也可以按照以下路径下载：微信商户平台(pay.weixin.qq.com)–&gt;账户中心–&gt;账户设置–&gt;API安全–&gt;证书下载。</p>
+</blockquote>
+<p>微信退款程序流程：<br><img src="http://ojrkbauy9.bkt.clouddn.com/wxpay-refund-3.png" alt="退款流程"></p>
+<ol>
+<li><p>设置退款时得参数。</p>
+<p>请求的参数有：</p>
+<ol>
+<li>appid ： 公众账号ID</li>
+<li>mch_id ： 商户号</li>
+<li>nonce_str ： 随机字符串    </li>
+<li>sign： 签名</li>
+<li>transaction_id / out_trade_no ：微信订单号 / 商户订单号 二者中传其中一个即可。</li>
+<li>out_refund_no： 商户退款单号（由商户自行生成的唯一标识）</li>
+<li>total_fee：订单金额（单位为分）</li>
+<li>refund_fee：退款金额（单位为分），退款金额不能大于订单金额。</li>
+<li>op_user_id：操作员帐号, 默认为商户号</li>
+</ol>
+<p>签名还是老规矩（默认是MD5方式），先将所有参数进行字典排序，然后以<code>$key=$value</code>的形式用<code>&amp;</code>字符拼接成字符串，最后将拼上 <code>&amp;key=YOUR_APIKEY</code> 的待签名字符串进行MD5加密即可。<br><img src="http://ojrkbauy9.bkt.clouddn.com/wxpay-refund-4.png" alt="签名方法"></p>
+</li>
+<li><p>将参数列表转换成XML格式。<br><img src="http://ojrkbauy9.bkt.clouddn.com/wxpay-refund-5.png" alt="将参数列表转换成XML格式"></p>
+</li>
+<li><p>发送退款请求。</p>
+<p><strong>退款请求需要携带微信上下载的证书，请保证证书存放路径外网不能直接访问。</strong><br><img src="http://ojrkbauy9.bkt.clouddn.com/wxpay-refund-6.png" alt="发送退款请求"></p>
+</li>
+<li><p>解析请求结果。</p>
+<p>当返回的结果中， <code>return_code</code> 和 <code>result_code</code> 均为 <code>SUCCESS</code> ，即为退款申请成功。更多返回结果，请移步至 <a href="https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_4" target="_blank" rel="external">官网</a></p>
+</li>
+</ol>
+<h1 id="结尾"><a href="#结尾" class="headerlink" title="结尾"></a>结尾</h1><p>微信支付的官方开发文档其实算是很详细了，传递的参数，返回结果，如果判断是否成功，都写的很好。只是，开发中的逻辑过程需要自己慢慢摸索，理清思路后，开发起来其实都是很迅速的。</p>
+<p>但是，开发微信支付时，需要留个心，需要将所有涉及到的微信后台提供的数据小心保存（比如AppSecret，一当忘记只能重置。）</p>
+<p>祝各位开发过程顺利进行。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/php/" rel="tag"># php</a>
+          
+            <a href="/tags/微信支付/" rel="tag"># 微信支付</a>
+          
+            <a href="/tags/微信/" rel="tag"># 微信</a>
+          
+            <a href="/tags/坑/" rel="tag"># 坑</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/22/qiniu-js-upload/" rel="next" title="使用七牛云存储图片 之 上传图片">
+                <i class="fa fa-chevron-left"></i> 使用七牛云存储图片 之 上传图片
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/05/10/payment-alipay/" rel="prev" title="支付开发填坑记之支付宝">
+                支付开发填坑记之支付宝 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="梁生、" />
+          <p class="site-author-name" itemprop="name">梁生、</p>
+           
+              <p class="site-description motion-element" itemprop="description">《JavaScript - 入门到放弃》</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#APP支付"><span class="nav-number">1.</span> <span class="nav-text">APP支付</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jsapi支付"><span class="nav-number">2.</span> <span class="nav-text">jsapi支付</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#坑1：-支付时出现-appid-and-openid-not-match-的报错"><span class="nav-number">2.0.1.</span> <span class="nav-text">坑1： 支付时出现 appid and openid not match 的报错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#坑2：-参数名大小写不一致。"><span class="nav-number">2.0.2.</span> <span class="nav-text">坑2： 参数名大小写不一致。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#坑3：-APP支付和jsapi支付不是同一个号"><span class="nav-number">2.0.3.</span> <span class="nav-text">坑3： APP支付和jsapi支付不是同一个号</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#支付结果的异步通知"><span class="nav-number">3.</span> <span class="nav-text">支付结果的异步通知</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#微信退款"><span class="nav-number">4.</span> <span class="nav-text">微信退款</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#结尾"><span class="nav-number">5.</span> <span class="nav-text">结尾</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-JZ · Leung"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">梁生、</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

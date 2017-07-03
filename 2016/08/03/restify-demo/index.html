@@ -1,0 +1,769 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="nodejs,javascript,restify," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="前端·禁地" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="使用 restify 框架搭建一个简易的 REST Web 服务。">
+<meta name="keywords" content="nodejs,javascript,restify">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 restify 搭建 RESTful API">
+<meta property="og:url" content="http://blog.leungjz.top/2016/08/03/restify-demo/index.html">
+<meta property="og:site_name" content="前端·禁地">
+<meta property="og:description" content="使用 restify 框架搭建一个简易的 REST Web 服务。">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/03/restify-demo/restify-demo/1-1.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/03/restify-demo/restify-demo/1.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/03/restify-demo/restify-demo/get.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/03/restify-demo/restify-demo/get-2.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/03/restify-demo/restify-demo/put.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/03/restify-demo/restify-demo/post.png">
+<meta property="og:updated_time" content="2017-06-29T12:45:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 restify 搭建 RESTful API">
+<meta name="twitter:description" content="使用 restify 框架搭建一个简易的 REST Web 服务。">
+<meta name="twitter:image" content="http://blog.leungjz.top/2016/08/03/restify-demo/restify-demo/1-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.leungjz.top/2016/08/03/restify-demo/"/>
+
+
+
+
+
+  <title> 使用 restify 搭建 RESTful API | 前端·禁地 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端·禁地</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-github">
+          <a href="https://github.com/JZLeung" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github"></i> <br />
+            
+            GitHub
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.leungjz.top/2016/08/03/restify-demo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="梁生、">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端·禁地">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                使用 restify 搭建 RESTful API
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-03T15:40:12+08:00">
+                2016-08-03
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>使用 restify 框架搭建一个简易的 REST Web 服务。<br><a id="more"></a></p>
+<h2 id="什么是-RESTful-架构？"><a href="#什么是-RESTful-架构？" class="headerlink" title="什么是 RESTful 架构？"></a>什么是 RESTful 架构？</h2><blockquote>
+<p>具象状态传输（英文：Representational State Transfer，简称REST）是Roy Thomas Fielding博士于2000年在他的博士论文 “Architectural Styles and the Design of Network-based Software Architectures” 中提出来的一种万维网软件架构风格。</p>
+<p>目前在三种主流的Web服务实现方案中，因为REST模式与复杂的SOAP和XML-RPC相比更加简洁，越来越多的web服务开始采用REST风格设计和实现。例如，Amazon.com提供接近REST风格的Web服务执行图书查询；雅虎提供的Web服务也是REST风格的。</p>
+</blockquote>
+<p>具体可以阅读 阮一峰 的日志 RESTful API 设计指南 ，或是参考 维基百科</p>
+<h2 id="什么是-restify-框架？"><a href="#什么是-restify-框架？" class="headerlink" title="什么是 restify 框架？"></a>什么是 restify 框架？</h2><blockquote>
+<p>restify is a node.js module built specifically to enable you to build correct REST web services. It intentionally borrows heavily from express as that is more or less the de facto API for writing web applications on top of node.js.</p>
+<p>restify 是专门帮助你建立正确的 REST Web 服务的 Node.js 模块，它有意地大量借鉴了Express。</p>
+</blockquote>
+<h2 id="安装使用-restify"><a href="#安装使用-restify" class="headerlink" title="安装使用 restify"></a>安装使用 restify</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p><code>$ npm install restify</code></p>
+<h3 id="编写基于-REST-的-API"><a href="#编写基于-REST-的-API" class="headerlink" title="编写基于 REST 的 API"></a>编写基于 REST 的 API</h3><ol>
+<li><p>新建一个 <code>app.js</code> 文件<br><code>$ touch app.js</code></p>
+</li>
+<li><p>引入 <code>restify</code> 模块</p>
+<p><code>var restify = require(&#39;restify&#39;);</code></p>
+</li>
+<li><p>配置 <code>restify</code> 的插件</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">server.use(restify.acceptParser(server.acceptable));</div><div class="line">server.use(restify.queryParser());</div><div class="line">server.use(restify.bodyParser());</div></pre></td></tr></table></figure>
+<ul>
+<li><p>Accept Parser</p>
+<blockquote>
+<p>Parses out the Accept header, and ensures that the server can respond to what the client asked for. You almost always want to just pass in server.acceptable here, as that’s an array of content types the server knows how to respond to (with the formatters you’ve registered). If the request is for a non-handled type, this plugin will return an error of 406.</p>
+<p>解析 Accept 头部，确保服务器可以响应客户端的请求。一般来说，你只需要传递 server.acceptable ，这是一个包含所有服务器知道如何响应的内容类型的数组。如果请求一个未知类型，该插件会返回一个 406 错误。</p>
+</blockquote>
+</li>
+<li><p>QueryParser</p>
+<blockquote>
+<p>Parses the HTTP query string (i.e., /foo?id=bar&amp;name=mark). If you use this, the parsed content will always be available in req.query, additionally params are merged into req.params. You can disable by passing in mapParams: false in the options object:</p>
+<p>解析 HTTP 传递的查询字符串（如，/foo?id=bar&amp;name=mark ）如果你使用这个插件，被处理的内容可以通过 req.query 访问，同时参数会被合并到 req.params 中。你可以通过传递参数对象 {mapParams: false} 来禁用它。</p>
+</blockquote>
+<p>  当不传入参数时，请求返回的数据如图：<br>  <img src="restify-demo/1-1.png" alt="无参数情况"><br>  当传入参数 <code>{mapParams: false}</code> 时，请求返回的数据如图，可以发现，params 中已经不再带有参数：<br>  <img src="restify-demo/1.png" alt="有参数情况"></p>
+</li>
+<li><p>BodyParser</p>
+<blockquote>
+<p>Blocks your chain on reading and parsing the HTTP request body. Switches on <code>Content-Type</code> and does the appropriate logic. <code>application/json</code>, <code>application/x-www-form-urlencoded</code> and <code>multipart/form-data</code> are currently supported.</p>
+<p>在读取和解析 HTTP 请求 body 的时候，改变 <code>Content-Type</code> 并执行相应的逻辑。支持 <code>application/json</code>, <code>application/x-www-form-urlencoded</code> 和 <code>multipart/form-data</code> 类型。</p>
+</blockquote>
+<p>  Options:</p>
+<ul>
+<li><code>maxBodySize</code> - The maximum size in bytes allowed in the HTTP body. Useful for limiting clients from hogging server memory.</li>
+<li><code>mapParams</code> - if <code>req.params</code> should be filled with parsed parameters from HTTP body.</li>
+<li><code>mapFiles</code> - if <code>req.params</code> should be filled with the contents of files sent through a multipart request. formidable is used internally for parsing, and a file is denoted as a multipart part with the <code>filename</code> option set in its <code>Content-Disposition</code>. This will only be performed if <code>mapParams</code> is true.</li>
+<li><code>overrideParams</code> - if an entry in <code>req.params</code> should be overwritten by the value in the body if the names are the same. For instance, if you have the route <code>/:someval</code>, and someone posts an <code>x-www-form-urlencoded</code> Content-Type with the body <code>someval=happy</code> to <code>/sad</code>, the value will be <code>happy</code> if <code>overrideParams</code> is <code>true</code>, <code>sad</code> otherwise.</li>
+<li><code>multipartHandler</code> - a callback to handle any multipart part which is not a file. If this is omitted, the default handler is invoked which may or may not map the parts into <code>req.params</code>, depending on the <code>mapParams</code>-option.</li>
+<li><code>multipartFileHandler</code> - a callback to handle any multipart file. It will be a file if the part have a <code>Content-Disposition</code> with the <code>filename</code> parameter set. This typically happens when a browser sends a from and there is a parameter similar to <code>&lt;input type=&quot;file&quot; /&gt;</code>. If this is not provided, the default behaviour is to map the contents into <code>req.params</code>.</li>
+<li><code>keepExtensions</code> - if you want the uploaded files to include the extensions of the original files (multipart uploads only). Does nothing if <code>multipartFileHandler</code> is defined.</li>
+<li><code>uploadDir</code> - Where uploaded files are intermediately stored during transfer before the contents is mapped into <code>req.params</code>. Does nothing if <code>multipartFileHandler</code> is defined.</li>
+<li><code>multiples</code> - if you want to support html5 multiple attribute in upload fields.</li>
+<li><code>hash</code> - If you want checksums calculated for incoming files, set this to either <code>sha1</code> or <code>md5</code>.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>编写 CRUD API<br><strong>此处的 CRUD 仅作为演示使用，并不具备任何数据库操作功能</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//获取所有信息</span></div><div class="line">server.get(<span class="string">'/person'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>)</span>&#123;</div><div class="line">    res.send(&#123;<span class="attr">message</span>: <span class="string">'Hello ,from GET!'</span>, <span class="attr">data</span>: <span class="string">'All person'</span>&#125;);</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Get request from '</span>+req.method);</div><div class="line">&#125;)</div><div class="line"><span class="comment">//获取某个person的信息</span></div><div class="line">server.get(<span class="string">'/person/:id'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>)</span>&#123;</div><div class="line">    res.send(&#123;<span class="attr">message</span>: <span class="string">'Hello ,from GET!'</span>, <span class="attr">data</span>: &#123;<span class="attr">id</span>: req.params.id&#125;&#125;);</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Get request from '</span>+req.method+<span class="string">', request id is '</span>+req.params.id);</div><div class="line">&#125;)</div><div class="line"><span class="comment">//修改person信息</span></div><div class="line">server.put(<span class="string">'/person/:id'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>)</span>&#123;</div><div class="line">    res.send(&#123;<span class="attr">message</span>: <span class="string">'Hello ,from PUT!'</span>, <span class="attr">data</span>: &#123;<span class="attr">info</span>: req.params, <span class="attr">id</span>: req.params.id&#125;&#125;);</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Get request from '</span>+req.method+<span class="string">', request id is '</span>+req.params.id);</div><div class="line">&#125;)</div><div class="line"><span class="comment">//新增person</span></div><div class="line">server.post(<span class="string">'/person'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">req, res</span>)</span>&#123;</div><div class="line">    res.send(&#123;<span class="attr">message</span>: <span class="string">'Hello ,from post!'</span>, <span class="attr">data</span>: &#123;<span class="attr">id</span>: id++, <span class="attr">info</span>: req.params&#125;&#125;);</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Get request from '</span>+req.method+<span class="string">', new Person\'s info is :'</span>+<span class="built_in">JSON</span>.stringify(req.params));</div><div class="line">    <span class="comment">// console.log(req);</span></div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+</li>
+<li><p>简易测试 API 是否可用</p>
+<p>测试用的工具是 <code>postman</code> ，具体介绍可以移步至 <a href="https://www.getpostman.com/" target="_blank" rel="external">官网</a></p>
+<ul>
+<li>测试 <code>get</code> 请求（不带参数 id）<br>  <img src="restify-demo/get.png" alt="get 请求不带 id"></li>
+<li>测试 <code>get</code> 请求（带参数 id = 2）<br>  <img src="restify-demo/get-2.png" alt="带参数 id = 2"></li>
+<li>测试 <code>put</code> 请求<br>  <img src="restify-demo/put.png" alt="带参数 id = 2"></li>
+<li>测试 <code>post</code> 请求<br>  <img src="restify-demo/post.png" alt="带参数 id = 2"></li>
+</ul>
+</li>
+</ol>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nodejs/" rel="tag"># nodejs</a>
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+            <a href="/tags/restify/" rel="tag"># restify</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/07/23/without-jquery-event-js/" rel="next" title="Without jQuery:event.js">
+                <i class="fa fa-chevron-left"></i> Without jQuery:event.js
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/05/without-jquery-lazyload-js/" rel="prev" title="Without jQuery:lazyload.js">
+                Without jQuery:lazyload.js <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="梁生、" />
+          <p class="site-author-name" itemprop="name">梁生、</p>
+           
+              <p class="site-description motion-element" itemprop="description">《JavaScript - 入门到放弃》</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是-RESTful-架构？"><span class="nav-number">1.</span> <span class="nav-text">什么是 RESTful 架构？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是-restify-框架？"><span class="nav-number">2.</span> <span class="nav-text">什么是 restify 框架？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装使用-restify"><span class="nav-number">3.</span> <span class="nav-text">安装使用 restify</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编写基于-REST-的-API"><span class="nav-number">3.2.</span> <span class="nav-text">编写基于 REST 的 API</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-JZ · Leung"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">梁生、</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

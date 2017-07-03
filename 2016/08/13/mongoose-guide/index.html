@@ -1,0 +1,967 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="nodejs,mongodb,javascript," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="前端·禁地" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="在 NodeJs 中写 MongoDb 的校验，构造和业务逻辑简直是一种拖累。这就是为什么我们写了 Mongoose。">
+<meta name="keywords" content="nodejs,mongodb,javascript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mongoose - 在 NodeJs 中优雅地建立 MongoDb 对象模型">
+<meta property="og:url" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/index.html">
+<meta property="og:site_name" content="前端·禁地">
+<meta property="og:description" content="在 NodeJs 中写 MongoDb 的校验，构造和业务逻辑简直是一种拖累。这就是为什么我们写了 Mongoose。">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/entity,save.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/model.create.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/entity.update.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/entity.update2.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/model.update.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/find.$where.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/find.where.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/find.all.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/find.and.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/find.or.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/find.nor.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/find.slice.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/find.sort.png">
+<meta property="og:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/validate-result.png">
+<meta property="og:updated_time" content="2017-06-29T12:45:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mongoose - 在 NodeJs 中优雅地建立 MongoDb 对象模型">
+<meta name="twitter:description" content="在 NodeJs 中写 MongoDb 的校验，构造和业务逻辑简直是一种拖累。这就是为什么我们写了 Mongoose。">
+<meta name="twitter:image" content="http://blog.leungjz.top/2016/08/13/mongoose-guide/mongoose-guide/entity,save.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.leungjz.top/2016/08/13/mongoose-guide/"/>
+
+
+
+
+
+  <title> Mongoose - 在 NodeJs 中优雅地建立 MongoDb 对象模型 | 前端·禁地 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端·禁地</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-github">
+          <a href="https://github.com/JZLeung" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github"></i> <br />
+            
+            GitHub
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.leungjz.top/2016/08/13/mongoose-guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="梁生、">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端·禁地">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Mongoose - 在 NodeJs 中优雅地建立 MongoDb 对象模型
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2016-08-13T17:07:15+08:00">
+                2016-08-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在 NodeJs 中写 MongoDb 的校验，构造和业务逻辑简直是一种拖累。这就是为什么我们写了 Mongoose。<br><a id="more"></a></p>
+<h2 id="什么是-MongoDb-和-Mongoose"><a href="#什么是-MongoDb-和-Mongoose" class="headerlink" title="什么是 MongoDb 和 Mongoose"></a>什么是 MongoDb 和 Mongoose</h2><p>MongoDb</p>
+<blockquote>
+<p>MongoDB is an open-source document database that provides high performance, high availability, and automatic scaling.</p>
+<p>MongoDb 是一个开源的文档数据库，可提供高性能，高可用性和自动缩放。</p>
+</blockquote>
+<p>MongoDB 是一个基于分布式文件存储的数据库。由 C++ 语言编写。旨在为 WEB 应用提供可扩展的高性能数据存储解决方案。</p>
+<p>MongoDB 是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最像关系数据库的。</p>
+<p>Mongoose</p>
+<blockquote>
+<p>Mongoose provides a straight-forward, schema-based solution to model your application data. It includes built-in type casting, validation, query building, business logic hooks and more, out of the box.</p>
+<p>Mongoose 为你的应用程序数据提供了一个直接的，基于模型的解决方案。他包括内置的类型转换，校验，建立查询，业务逻辑的钩子等。</p>
+<p>Mongoose是一个提供了MongoDB地相映射的Node.js库，它在Node.js中与ORM（Object Relational Mapping）有着类似的接口。如果你不熟悉ORM或者Mongoose中的Object Data Mapping（ODM），意思是Mongoose将数据库中的数据转换为JavaScript对象以供你在应用中使用。</p>
+</blockquote>
+<h2 id="为什么使用-Mongoose"><a href="#为什么使用-Mongoose" class="headerlink" title="为什么使用 Mongoose"></a>为什么使用 Mongoose</h2><blockquote>
+<p>Let’s face it, writing MongoDB validation, casting and business logic boilerplate is a drag</p>
+</blockquote>
+<h2 id="安装和使用-Mongoose"><a href="#安装和使用-Mongoose" class="headerlink" title="安装和使用 Mongoose"></a>安装和使用 Mongoose</h2><ol>
+<li>安装<br><code>$ npm install mongoose --save-dev</code></li>
+<li><p>使用<br><code>$ touch index.js</code></p>
+<p>在 <code>index.js</code> 文件中引入 <code>Mongoose</code> ，并连接数据库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">var mongoose = require(&apos;mongoose&apos;); mongoose.connect(&apos;mongodb://localhost/myblog&apos;);//连接上 myblog 数据库</div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><strong>开始使用 Mongoose 操作 MongoDb</strong></p>
+<p><strong>注：本文默认已经搭好 Nodejs 和 MongoDb 环境，若未搭建环境，请移步至 -&gt; 还在编写当中</strong></p>
+<p>假设我们在构建一个博客，需要将博文存储至数据库中。<br>而每一篇博文的结构如下：<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    title: '标题',</div><div class="line">    author: '作者',</div><div class="line">    date: '时间',</div><div class="line">    comments: '评论',</div><div class="line">    tags: '标签',</div><div class="line">    body: '正文'</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><strong>OK, Go！</strong></p>
+<p><strong>Mongoose 中的 Schema 和 Model</strong></p>
+<p>在使用 Mongoose 前，先了解一下 Mongoose 中的 Schema 和 Model。</p>
+<ul>
+<li><p>Schema<br>  在使用 Mongoose 前，先了解一下 Mongoose 中的 Schema 和 Model。</p>
+<blockquote>
+<p>Everything in Mongoose starts with a Schema. Each schema maps to a MongoDB collection and defines the shape of the documents within that collection.</p>
+<p>在 Mongoose 中，所有东西都从一个 Schema 开始。每一个 schema 都映射到一个 MongoDb 的集合，并定义了该集合中的文档的形式。</p>
+</blockquote>
+<p>  定义一个 Schema：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Schema = mongoose.Schema;</div><div class="line"><span class="keyword">var</span> userSchema = <span class="keyword">new</span> Schema(&#123;</div><div class="line">    <span class="attr">name</span>: <span class="built_in">String</span>,</div><div class="line">    <span class="attr">pass</span>: <span class="built_in">String</span>,</div><div class="line">    <span class="attr">email</span>: <span class="built_in">String</span>,</div><div class="line">    <span class="attr">createTime</span>: <span class="built_in">Date</span>,</div><div class="line">    <span class="attr">lastLogin</span>: <span class="built_in">Date</span></div><div class="line">&#125;);</div></pre></td></tr></table></figure>
+<p>  Schema 中的每一个键都定义了一个文档的一个属性。在上面的例子中，我们定义了用户名 <code>name</code> ，它会被映射为 String 的 Schema 类</p>
+<p>  型，注册时间 <code>createTime</code> 会被映射为 Date 的 Schema 类型。</p>
+<p>  允许的 Schema 类型有：（<a href="http://mongoosejs.com/docs/schematypes.html" target="_blank" rel="external">了解更多</a>）</p>
+<ul>
+<li>String</li>
+<li>Number</li>
+<li>Date</li>
+<li>Buffer</li>
+<li>Boolean</li>
+<li>Mixed</li>
+<li>ObjectId</li>
+<li><p>Array</p>
+<p>用法：</p>
+</li>
+<li><p>自定义方法<br>  模型的实例都是一个个的文档，文档中自带许多方法。同时，我们也可以定义我们自己的方法。</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> userSchema = <span class="keyword">new</span> Schema(&#123;</div><div class="line">    <span class="attr">name</span>: <span class="built_in">String</span>,</div><div class="line">    <span class="attr">pass</span>: <span class="built_in">String</span>,</div><div class="line">    <span class="attr">email</span>: <span class="built_in">String</span>,</div><div class="line">    <span class="attr">createTime</span>: <span class="built_in">Date</span>,</div><div class="line">    <span class="attr">lastLogin</span>: <span class="built_in">Date</span>，</div><div class="line">    type: <span class="built_in">String</span></div><div class="line">&#125;);</div><div class="line"><span class="comment">//根据该用户的类型区查找该类型下的所有用户</span></div><div class="line">userSchema.methods.findUsersByType = <span class="function"><span class="keyword">function</span>(<span class="params">name, cb</span>)</span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.find(&#123;<span class="attr">type</span>: <span class="keyword">this</span>.type&#125;, cb);</div><div class="line">&#125;</div><div class="line"><span class="comment">//新建模型</span></div><div class="line"><span class="keyword">var</span> User = mongoose.model(<span class="string">'User'</span>, userSchema);</div><div class="line"><span class="comment">//使用</span></div><div class="line"><span class="keyword">var</span> newUser = <span class="keyword">new</span> User(&#123;...&#125;);</div><div class="line">newUser.findUsersByType(<span class="function"><span class="keyword">function</span>(<span class="params">err, users</span>)</span>&#123;</div><div class="line">    err &amp;&amp; <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(users);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>  这样就向 <code>User</code> 的实例添加了一个自定义的方法。</p>
+</li>
+<li><p>静态方法<br>  同样的，向模型中添加自定义方法也是很简单。</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">userSchema.statics.findUsersByName = <span class="function"><span class="keyword">function</span>(<span class="params">name, cb</span>)</span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.find(&#123;<span class="attr">name</span>: <span class="keyword">new</span> <span class="built_in">RegExp</span>(name, <span class="string">"ig"</span>)&#125;, cb);</div><div class="line">&#125;</div><div class="line"><span class="comment">//使用</span></div><div class="line">User.findUsersByName(<span class="string">'leung'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">err, users</span>)</span>&#123;</div><div class="line">    err &amp;&amp; <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(users);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+</li>
+<li><p>查询辅助<br>  可以自定义一个查询的辅助函数，它和实体的方法类似，但是供 Mongoose 查询使用。</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">userSchema.query.byName = <span class="function"><span class="keyword">function</span>(<span class="params">name</span>)</span>&#123;</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.find(&#123;<span class="attr">name</span>: <span class="keyword">new</span> <span class="built_in">RegExp</span>(name, <span class="string">"ig"</span>)&#125;);</div><div class="line">&#125;</div><div class="line"><span class="comment">//使用</span></div><div class="line">userSchema.find().byName(<span class="string">'leung'</span>).exec(<span class="function"><span class="keyword">function</span>(<span class="params">err, users</span>)</span>&#123;</div><div class="line">    err &amp;&amp; <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(users);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+</li>
+<li><p>索引<br>  MongoDb 支持第二个索引，在使用 Mongoose 的时候，可以在定义 Schema 的时候定义索引。</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//定义方法1</span></div><div class="line"><span class="keyword">var</span> userSchema = <span class="keyword">new</span> Schema(&#123;</div><div class="line">    <span class="attr">name</span>: <span class="built_in">String</span>,</div><div class="line">    <span class="attr">pass</span>: <span class="built_in">String</span>,</div><div class="line">    <span class="attr">email</span>: <span class="built_in">String</span>,</div><div class="line">    <span class="attr">createTime</span>: &#123;<span class="attr">type</span>: <span class="built_in">Date</span>, <span class="attr">index</span>: <span class="literal">true</span>&#125;,</div><div class="line">    <span class="attr">lastLogin</span>: &#123;<span class="attr">type</span>: <span class="built_in">Date</span>, <span class="attr">index</span>: <span class="literal">true</span>&#125;,</div><div class="line">    <span class="attr">type</span>: <span class="built_in">String</span></div><div class="line">&#125;);</div><div class="line"><span class="comment">//定义方法2</span></div><div class="line">userSchema.index(&#123; <span class="attr">createTime</span>: <span class="number">1</span>, <span class="attr">lastLogin</span>: <span class="number">-1</span> &#125;);</div></pre></td></tr></table></figure>
+<p>  Mongoose 会在程序启动的时候，对于每个定义了索引的字段自动调用 <code>ensureIndex</code> 函数。当在不需要这些索引的时候，可以使用下列 4 种方式关闭索引。</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mongoose.connect(<span class="string">'mongodb://user:pass@localhost:port/database'</span>, &#123; <span class="attr">config</span>: &#123; <span class="attr">autoIndex</span>: <span class="literal">false</span> &#125; &#125;);</div><div class="line"><span class="comment">// or</span></div><div class="line">mongoose.createConnection(<span class="string">'mongodb://user:pass@localhost:port/database'</span>, &#123; <span class="attr">config</span>: &#123; <span class="attr">autoIndex</span>: <span class="literal">false</span> &#125; &#125;);</div><div class="line"><span class="comment">// or</span></div><div class="line">userSchema.set(<span class="string">'autoIndex'</span>, <span class="literal">false</span>);</div><div class="line"><span class="comment">// or</span></div><div class="line"><span class="keyword">new</span> Schema(&#123;..&#125;, &#123; <span class="attr">autoIndex</span>: <span class="literal">false</span> &#125;);</div></pre></td></tr></table></figure>
+</li>
+<li><p>虚拟字段<br>  虚拟字段可以让你很方便的在文档中存取，但是不会写入数据库中。getter 方法在格式化或者合并字段的时候很有用，而 setter 方法则在反格式化或者时将多个值合并的时候有用。</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> personSchema = <span class="keyword">new</span> Schema(&#123;</div><div class="line">    <span class="attr">name</span>:&#123;</div><div class="line">        <span class="attr">firstName</span>: <span class="built_in">String</span>,</div><div class="line">        <span class="attr">lastName</span>: <span class="built_in">String</span></div><div class="line">    &#125;</div><div class="line">&#125;);</div><div class="line"><span class="keyword">var</span> Person = mongoose.model(<span class="string">'Person'</span>, personSchema);</div><div class="line"><span class="comment">//定义虚拟字段 fullName</span></div><div class="line">personSchema.virtual(<span class="string">'name.fullName'</span>).get(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>.name.firstName + <span class="string">' '</span> + <span class="keyword">this</span>.name.lastName;</div><div class="line">&#125;)</div><div class="line"><span class="keyword">var</span> me = <span class="keyword">new</span> Person(&#123;<span class="attr">name</span>: &#123;<span class="attr">firstName</span>: <span class="string">'zhong'</span>, <span class="attr">lastName</span>: <span class="string">'Lueng'</span>&#125;&#125;);</div><div class="line"><span class="built_in">console</span>.log(me);</div><div class="line"><span class="built_in">console</span>.log(me.name.fullName) <span class="comment">//zhong Lueng</span></div></pre></td></tr></table></figure>
+<p>  虚拟字段的 setter 方法会在其他校验前使用，因此，即使字段时必须的，虚拟字段也会正常执行。</p>
+<p>  <strong>只用非虚拟字段才可以在查询或者字段选择中使用。</strong></p>
+</li>
+<li><p>配置项<br>  Schema 有许多可配置的配置项，可以在新建 Schema 时或者直接设置。</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">new</span> Schema(&#123;..&#125;, options);</div><div class="line"><span class="comment">//or</span></div><div class="line"><span class="keyword">var</span> schema = <span class="keyword">new</span> Schema(&#123;..&#125;);</div><div class="line">schema.set(option, value);</div></pre></td></tr></table></figure>
+<p>  有效的配置项：</p>
+<ul>
+<li><code>autoIndex</code></li>
+<li><code>capped</code></li>
+<li><code>collection</code></li>
+<li><code>emitIndexErrors</code></li>
+<li><code>id</code></li>
+<li><code>_id</code></li>
+<li><code>minimize</code></li>
+<li><code>read</code></li>
+<li><code>safe</code></li>
+<li><code>shardKey</code></li>
+<li><code>strict</code></li>
+<li><code>toJSON</code></li>
+<li><code>toObject</code></li>
+<li><code>typeKey</code></li>
+<li><code>validateBeforeSave</code></li>
+<li><code>versionKey</code></li>
+<li><code>skipVersioning</code></li>
+<li><code>timestamps</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Model<br>  在 Mongoose 中，模型是通过已定义的 Schema 生成，这些模型的实例可以保存并检索数据库中的文档。数据库中的所有文档都是通过模型来创建和检索。</p>
+<ul>
+<li><p>创建文档<br>  文档是模型的实例，创建文档和将其保存到数据库中是非常简单的：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> animalSchema = <span class="keyword">new</span> Schema(&#123;</div><div class="line">    <span class="attr">type</span>: <span class="built_in">String</span></div><div class="line">&#125;);</div><div class="line"><span class="keyword">var</span> Animal = mongoose.model(<span class="string">'Animal'</span>, animalSchema);</div><div class="line"><span class="keyword">var</span> cat = <span class="keyword">new</span> Animal(&#123;<span class="attr">type</span>: <span class="string">'cat'</span>&#125;);</div><div class="line">cat.save(<span class="function">(<span class="params">err, doc</span>) =&gt;</span>&#123;</div><div class="line">    err &amp;&amp; <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'doc is saved'</span>);<span class="comment">//saved</span></div><div class="line">&#125;);</div><div class="line"><span class="comment">// or</span></div><div class="line">Animal.create(&#123;<span class="attr">type</span>: <span class="string">'cat'</span>&#125;, (err, doc) =&gt;&#123;</div><div class="line">    err &amp;&amp; <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="comment">//saved!</span></div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+</li>
+<li><p>查询文档<br>  在 Mongoose 中查询文档是很方便的，同时支持 MongoDb 原生语法，模型中有许多内置的静态函数： <code>find</code> , <code>where</code> , <code>findById</code> , <code>findOne</code> 等等， 也支持链式调用。</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Animal.find(&#123;<span class="attr">type</span>: <span class="string">'dog'</span>&#125;).where(<span class="string">'age'</span>).gt(<span class="number">2</span>).limit(<span class="number">10</span>).exec();</div></pre></td></tr></table></figure>
+</li>
+<li><p>移除文档<br>  每个模型都有一个默认的移除方法，可以移除所有符合搜索条件的文档。</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">Animal.remove(&#123;<span class="attr">type</span>: <span class="string">'dongbeihu'</span>&#125;, (err, res)&#123;</div><div class="line">    err &amp;&amp; <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="comment">//removed!</span></div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+</li>
+<li><p>更新文档<br>  每个模型都有他自己的更新方法，供更新数据库中所有符合条件的文档，同时不返回任何东西。</p>
+<p>  <strong>如果需要更新单个文档，并且返回更新后的文档，请使用 <code>findOneAndUpdate</code></strong></p>
+</li>
+</ul>
+</li>
+</ul>
+<p>下面可开始使用 Mongoose 来操作 MongoDb 数据库了。</p>
+<ol>
+<li><p>创建博文的 Schema</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Schema = mongoose.Schema;</div><div class="line"><span class="keyword">var</span> blogSchema = <span class="keyword">new</span> Schema(&#123;</div><div class="line">    <span class="attr">title</span>: <span class="built_in">String</span>,          <span class="comment">//标题</span></div><div class="line">    author: <span class="built_in">String</span>,         <span class="comment">//作者</span></div><div class="line">    body: <span class="built_in">String</span>,           <span class="comment">//正文</span></div><div class="line">    comments: [&#123;            <span class="comment">//评论</span></div><div class="line">        author: <span class="built_in">String</span>,</div><div class="line">        <span class="attr">date</span>: <span class="built_in">Date</span>,</div><div class="line">        <span class="attr">body</span>: <span class="built_in">String</span></div><div class="line">    &#125;],</div><div class="line">    <span class="attr">date</span>: &#123;<span class="attr">type</span>: <span class="built_in">Date</span>, <span class="attr">default</span>: <span class="built_in">Date</span>.now&#125;,  <span class="comment">//发布时间</span></div><div class="line">    isDelete: <span class="built_in">Boolean</span>,                        <span class="comment">//是否删除</span></div><div class="line">    tags: [&#123;<span class="attr">type</span>: <span class="built_in">String</span>&#125;]                  <span class="comment">//标签</span></div><div class="line">&#125;, &#123;<span class="attr">collection</span>: <span class="string">'blog'</span>&#125;);   <span class="comment">//选择 blog 集合</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>创建一个 Blog 模型<br> 创建了一个模型之后，我们就可以通过模型去创建新的文档或者去操作数据库。</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Blog = mongoose.model(<span class="string">'Blog'</span>, blogSchema);</div></pre></td></tr></table></figure>
+</li>
+<li><p>创建一个新的实体对象<br> <strong>这里的所有数据都是通过 Mockjs 进行模拟。详情移步至 <a href="http://mockjs.com/" target="_blank" rel="external">Mockjs 官网</a></strong><br> 使用 mockjs 模拟真实数据</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Mock = <span class="built_in">require</span>(<span class="string">'mockjs'</span>);</div><div class="line"><span class="keyword">var</span> Random = Mock.Random;</div><div class="line">exports.getBlog = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">    <span class="keyword">var</span> blog = &#123;</div><div class="line">        <span class="attr">title</span>: Random.ctitle(<span class="number">3</span>,<span class="number">10</span>),         <span class="comment">//随机生成一个长度3-10之间的中文标题</span></div><div class="line">        author: Random.cword(<span class="number">2</span>,<span class="number">3</span>),          <span class="comment">//随机生成一个长度2-3之间的中文单词</span></div><div class="line">        body: Random.cparagraph(<span class="number">1</span>,<span class="number">3</span>),       <span class="comment">//随机生成1-3段中文段落</span></div><div class="line">        comments: [],</div><div class="line">        <span class="attr">date</span>: Random.datetime(<span class="string">'yyyy-MM-dd HH:mm'</span>),  <span class="comment">//随机生成一个时间点</span></div><div class="line">        tags: []</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">var</span> length =~~(<span class="built_in">Math</span>.random()*<span class="number">10</span>) +<span class="number">5</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; length; i++) &#123;</div><div class="line">        blog.comments.push(Mock.mock(&#123;</div><div class="line">                    <span class="attr">author</span>: Random.cword(<span class="number">2</span>,<span class="number">3</span>),      <span class="comment">//随机生成一条评论的作者名字</span></div><div class="line">                    body: Random.cparagraph(<span class="number">1</span>,<span class="number">3</span>),   <span class="comment">//随机生成一条评论的内容</span></div><div class="line">                    date: Random.datetime(<span class="string">'yyyy-MM-dd HH:mm'</span>)   <span class="comment">//随机生成评论的时间点</span></div><div class="line">                &#125;))</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">var</span> length2 =~~(<span class="built_in">Math</span>.random()*<span class="number">4</span>) +<span class="number">2</span>;</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; length2; i++) &#123;             <span class="comment">//随机加入几个标签</span></div><div class="line">        <span class="keyword">var</span> tag = Random.pick([<span class="string">'nodejs'</span>,<span class="string">'js'</span>,<span class="string">'html'</span>,<span class="string">'css'</span>,<span class="string">'java'</span>,<span class="string">'php'</span>,<span class="string">'python'</span>]);</div><div class="line">        <span class="keyword">if</span>(blog.tags.indexOf(tag) == <span class="number">-1</span>) blog.tags.push(tag)</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> blog;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p> 生成一个 blog 实体对象</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> newBlog = <span class="built_in">require</span>(<span class="string">'./blog'</span>)；        <span class="comment">//导入随机生成数据的模块</span></div><div class="line"><span class="keyword">var</span> blogObj = newBlog.getBlog();</div><div class="line"><span class="keyword">var</span> blog = <span class="keyword">new</span> Blog(blogObj)  <span class="comment">//将随机生成的数据转换成为 blog 模型的实体。</span></div><div class="line"><span class="comment">//生成实体对象的另一种方法.</span></div><div class="line"><span class="comment">//此方法相当于创建了一个实体并写入数据库，再返回一个 promise 对象。</span></div><div class="line"><span class="comment">//var blog2 = Blog.create(blogObj);</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>数据库的 CRUD</p>
+<ul>
+<li><p>create<br>  基于实体对象: <code>Entity.save(callback)</code>;</p>
+<p>  Example:</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> blogObj = newBlog.getBlog();</div><div class="line"><span class="keyword">var</span> blog = <span class="keyword">new</span> Blog(blogObj)</div><div class="line">blog.save(<span class="function">(<span class="params">err, doc</span>) =&gt;</span> &#123;</div><div class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(doc);</div><div class="line">&#125;)</div><div class="line"><span class="comment">//&#123;title: '...', author: '...'&#125;</span></div></pre></td></tr></table></figure>
+<p>  结果：<br>  <img src="mongoose-guide/entity,save.png" alt=""><br>  基于模型： <code>Model.create(Obj, callback)</code></p>
+<p>  Example:</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Blog.create(blogObj, (err, doc) =&gt; &#123;</div><div class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(doc);</div><div class="line">&#125;)</div><div class="line"><span class="comment">//&#123;title: '...', author: '...'&#125;</span></div></pre></td></tr></table></figure>
+<p>  结果：<br>  <img src="mongoose-guide/model.create.png" alt=""></p>
+</li>
+<li><p>delete<br>  基于实体对象：<code>Entity.remove(cb)</code></p>
+<p>  基于模型：<code>Model.remove(query, cb)</code></p>
+</li>
+<li><p>update<br>  基于实体对象：<code>Entity.update(cb)</code></p>
+<p>  Example:</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> blog = <span class="keyword">new</span> Blog(blogObj);</div><div class="line">blog.save(<span class="function">(<span class="params">err, doc</span>) =&gt;</span> &#123;   <span class="comment">//先添加新的博文</span></div><div class="line">    <span class="keyword">if</span>(err) <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(<span class="string">'Entity.save()'</span>);</div><div class="line">    <span class="built_in">console</span>.log(doc);</div><div class="line">    <span class="comment">//通过实体直接更新博文</span></div><div class="line">    blog.update(&#123;<span class="attr">$set</span>: &#123;<span class="attr">date</span>: <span class="keyword">new</span> <span class="built_in">Date</span>(), <span class="attr">title</span>: <span class="string">'Update From Mongoose'</span>&#125;&#125;, (err2, doc) =&gt; &#123;</div><div class="line">        <span class="keyword">if</span>(err2) <span class="keyword">return</span> <span class="built_in">console</span>.error(err2);</div><div class="line">        <span class="built_in">console</span>.log(doc);</div><div class="line">    &#125;)</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>  结果：<br>  <img src="mongoose-guide/entity.update.png" alt=""><br>  更新后在 Mongobooster 中的数据<br>  <img src="mongoose-guide/entity.update2.png" alt=""><br>  基于模型：</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Model.update(query, docs, options, cb)</div></pre></td></tr></table></figure>
+<p>  参数：</p>
+<ul>
+<li><code>query</code>：查询条件。</li>
+<li><code>docs</code>：需要更新的数据。</li>
+<li><code>options</code>：配置项。</li>
+<li><p><code>cb</code>：回调。<br>返回：</p>
+<p><code>&lt;Qeury&gt; this</code></p>
+<p>其中，配置项中有效的配置如下：</p>
+</li>
+<li><code>safe</code> (boolean) safe mode (defaults to value set in schema (true))</li>
+<li><code>upsert</code> (boolean) whether to create the doc if it doesn’t match (false)</li>
+<li><code>multi</code> (boolean) whether multiple documents should be updated (false)</li>
+<li><code>runValidators</code>: if true, runs update validators on this command. Update validators validate the update operation against the model’s schema.</li>
+<li><code>setDefaultsOnInsert</code>: if this and upsert are true, mongoose will apply the defaults specified in the model’s schema if a new document is created. This option only works on MongoDB * &gt;= 2.4 because it relies on MongoDB’s $setOnInsert operator.</li>
+<li><code>strict</code> (boolean) overrides the strict option for this update</li>
+<li><code>overwrite</code> (boolean) disables update-only mode, allowing you to overwrite the doc (false)</li>
+<li><p><code>context</code> (string) if set to ‘query’ and runValidators is on, this will refer to the query in custom validator functions that update * validation runs. Does nothing if runValidators is false.</p>
+<p><strong>只有传入 <code>callback</code> 时，所有的更新操作才会被执行</strong></p>
+<p>Example：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//以下操作均不会执行</span></div><div class="line"><span class="keyword">var</span> q = Blog.where(&#123;<span class="attr">title</span>: <span class="regexp">/del/g</span>&#125;).update(&#123;<span class="attr">$set</span>: &#123;<span class="attr">comments</span>: []&#125;&#125;);</div><div class="line"><span class="comment">//等同于</span></div><div class="line"><span class="comment">//var q = where(&#123;title: /del/g&#125;).update(&#123;comments: []&#125;);</span></div><div class="line"><span class="comment">//下面三条命令均会执行更新操作。</span></div><div class="line"><span class="comment">//q.exec()</span></div><div class="line"><span class="comment">//q.update(true)</span></div><div class="line"><span class="keyword">var</span> q = Blog.where(&#123;<span class="attr">title</span>: <span class="regexp">/del/g</span>&#125;).update(&#123;<span class="attr">$set</span>: &#123;<span class="attr">comments</span>: []&#125;&#125;, (err) =&gt; &#123;</div><div class="line">    <span class="comment">//executes</span></div><div class="line">&#125;);</div><div class="line"><span class="comment">//将文档重写为空文档</span></div><div class="line"><span class="keyword">var</span> q = Blog.where(&#123; <span class="attr">_id</span>: id &#125;).setOptions(&#123; <span class="attr">overwrite</span>: <span class="literal">true</span> &#125;)</div><div class="line">q.update(&#123; &#125;, callback); <span class="comment">// executes</span></div><div class="line"><span class="comment">//or</span></div><div class="line"><span class="comment">//var q = Blog.update(&#123;_id: id&#125;, &#123;&#125;, &#123;overwrite: true&#125;, callback);</span></div><div class="line"><span class="comment">//将所有博文的创建日期设置为今天</span></div><div class="line">Blog.where()</div><div class="line"> .setOptions(&#123; <span class="attr">multi</span>: <span class="literal">true</span> &#125;)</div><div class="line"> .update(&#123; <span class="attr">$set</span>: &#123; <span class="attr">date</span>: <span class="keyword">new</span> <span class="built_in">Date</span>() &#125;&#125;, callback)</div><div class="line"><span class="comment">//or</span></div><div class="line"><span class="comment">//Blog.update(&#123;&#125;, &#123; $set: &#123; date: new Date() &#125;&#125;, &#123; multi: true &#125;, callback);</span></div></pre></td></tr></table></figure>
+<p>批量更新结果：<br><img src="mongoose-guide/model.update.png" alt=""></p>
+</li>
+</ul>
+</li>
+<li><p>read(query)<br>  <strong>find 操作包含了许多查询的操作，在这里只介绍最常用的几种查询方法，具体的可以查阅官网的 <a href="http://mongoosejs.com/docs/api.html#query-js" target="_blank" rel="external">API Guide</a></strong></p>
+<ul>
+<li><p>$where <strong>(注意前面的 $)</strong><br>可以传入一个 javascript 函数或者表达式作为查询条件。</p>
+<p>用法：$where(js)</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//在数据库中找出作者名字长度为 2 且评论大于 10 条的博文：</span></div><div class="line">Blog</div><div class="line">.$where(<span class="string">'this.comments.length &gt;= 10 &amp;&amp; this.author.length === 3'</span>)</div><div class="line"><span class="comment">//.$where(function()&#123;return this.comments.length &gt;= 10 &amp;&amp; this.author.length === 3;&#125;)</span></div><div class="line">.select(<span class="string">'title author commentSize'</span>)</div><div class="line">.find(<span class="function">(<span class="params">err, docs</span>)=&gt;</span>&#123;</div><div class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(docs);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>查询结果：<br><img src="mongoose-guide/find.$where.png" alt=""></p>
+</li>
+<li><p>where<br>指定一个查询字段,供后续的链式调用.字段可以是字符串,也可以时一个完整的查询对象。</p>
+<p>用法：<code>where(path, val)</code>，<code>path</code> 可以是字符串或是对象</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//查找评论数大于8条,且标题含有叫字的博文</span></div><div class="line">Blog</div><div class="line">.where(<span class="string">'commentSize'</span>).gte(<span class="number">8</span>)</div><div class="line"><span class="comment">//.where(&#123;'commentSize':&#123;gte: 8&#125;&#125;)</span></div><div class="line">.where(<span class="string">'title'</span>, /叫/g)</div><div class="line">.select(<span class="string">'title author commentSize'</span>)</div><div class="line">.find(<span class="function">(<span class="params">err, docs</span>)=&gt;</span>&#123;</div><div class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(docs);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>查询结果：<br><img src="mongoose-guide/find.where.png" alt=""></p>
+</li>
+</ul>
+</li>
+<li><p>all<br>  指定一个 all 的查询条件。all 的使用方法可以查阅 MongoDb <a href="https://docs.mongodb.com/manual/reference/operator/query/all/" target="_blank" rel="external">官方文档</a></p>
+<p>  用法： <code>all([path], val)</code>,当只传递一个参数时，查询字段已经在 <code>where</code> 中指定。</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//查询出同时含有 html 和 js 标签的博文</span></div><div class="line">Blog</div><div class="line"><span class="comment">// .where('tags').all(['html', 'js'])</span></div><div class="line">.find().all(<span class="string">'tags'</span>, [<span class="string">'html'</span>, <span class="string">'js'</span>])</div><div class="line">.select(<span class="string">'title author tags'</span>)</div><div class="line">.find(<span class="function">(<span class="params">err, docs</span>)=&gt;</span>&#123;</div><div class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(docs);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>  查询结果：<br>  <img src="mongoose-guide/find.all.png" alt=""></p>
+</li>
+<li><p>and<br>  指定一个 and 的查询条件。</p>
+<p>  用法：<code>and(array)</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//查找出标题带有叫字，且含有 js 标签的博文</span></div><div class="line">Blog.find()</div><div class="line">.and([&#123;<span class="attr">title</span>: <span class="regexp">/叫/g</span>&#125;, &#123;<span class="attr">tags</span>: <span class="string">'js'</span>&#125;])</div><div class="line">.select(<span class="string">'title author tags'</span>)</div><div class="line">.find(<span class="function">(<span class="params">err, docs</span>)=&gt;</span>&#123;</div><div class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(docs);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>  查询结果：<br>  <img src="mongoose-guide/find.and.png" alt=""></p>
+</li>
+<li><p>count<br>  返回符合指定条件的文档个数。</p>
+<p>  用法：<code>count(query, callback)</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//查找出标题带有叫字，且含有 js 标签的博文</span></div><div class="line">Blog.find()</div><div class="line">.and([&#123;<span class="attr">title</span>: <span class="regexp">/叫/g</span>&#125;, &#123;<span class="attr">tags</span>: <span class="string">'js'</span>&#125;])</div><div class="line">.select(<span class="string">'title author tags'</span>)</div><div class="line">.count(<span class="function">(<span class="params">err, docs</span>)=&gt;</span>&#123;</div><div class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(docs);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>  查询结果：1</p>
+</li>
+<li><p>limit<br>  指定返回查询条数。</p>
+<p>  用法：<code>limit(Number)</code>。</p>
+</li>
+<li><p>or / nor<br>  指定一组查询条件，只要符合/不符合其中一个条件即可。</p>
+<p>  用法：<code>or(array) / nor(array)</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//查询所有标签包含 js, 或者标题有“叫”字的博文</span></div><div class="line">Blog.find()</div><div class="line">.or([&#123;<span class="attr">title</span>: <span class="regexp">/叫/g</span>&#125;, &#123;<span class="attr">tags</span>: <span class="string">'css'</span>&#125;])</div><div class="line">.select(<span class="string">'title author tags'</span>)</div><div class="line">.find(<span class="function">(<span class="params">err, docs</span>)=&gt;</span>&#123;</div><div class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(docs);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>  查询结果：<br>  <img src="mongoose-guide/find.or.png" alt=""></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//查询所有标签不包含 js或者标题不含有“叫”字的博文</span></div><div class="line">Blog.find()</div><div class="line">.nor([&#123;<span class="attr">title</span>: <span class="regexp">/叫/g</span>&#125;, &#123;<span class="attr">tags</span>: <span class="string">'js'</span>&#125;])</div><div class="line">.select(<span class="string">'title author tags'</span>)</div><div class="line">.find(<span class="function">(<span class="params">err, docs</span>)=&gt;</span>&#123;</div><div class="line">    <span class="keyword">if</span>(err) <span class="keyword">return</span> <span class="built_in">console</span>.error(err);</div><div class="line">    <span class="built_in">console</span>.log(docs);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>  查询结果：<br>  <img src="mongoose-guide/find.nor.png" alt=""></p>
+</li>
+<li><p>slice<br>  返回符合指定条件的文档个数。</p>
+<p>  用法：<code>slice([path], value)</code></p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//查出所有的博文，并显示每个博文的第一个标签。</span></div><div class="line">Blog</div><div class="line">.where(<span class="string">'tags'</span>).slice(<span class="number">1</span>)</div><div class="line">.select(<span class="string">'title'</span>)</div><div class="line">.limit(<span class="number">4</span>)</div><div class="line">.exec(<span class="function">(<span class="params">err, doc</span>) =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.log(doc);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>  查询结果：<br>  <img src="mongoose-guide/find.slice.png" alt=""></p>
+</li>
+<li><p>sort<br>  设定排序规则。</p>
+<p>  用法：<code>sort(arg)</code>.参数可以是对象，可以是字符串。</p>
+  <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//查出所有的博文，并按照标题排序。</span></div><div class="line">Blog.find()</div><div class="line">.sort(<span class="string">'title'</span>)</div><div class="line"><span class="comment">//.sort(&#123;title: 1&#125;)     //传入对象参数</span></div><div class="line"><span class="comment">//.sort(&#123;title: -1&#125;)    //传入对象参数，标题倒叙</span></div><div class="line"><span class="comment">//.sort('-title')       //传入对象字符串，标题倒叙</span></div><div class="line">.limit(<span class="number">4</span>)</div><div class="line">.exec(<span class="function">(<span class="params">err, doc</span>) =&gt;</span> &#123;</div><div class="line">    <span class="built_in">console</span>.log(doc);</div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>  查询结果：<br>  <img src="mongoose-guide/find.sort.png" alt=""></p>
+</li>
+</ul>
+</li>
+<li><p>validate<br> Mongoose 中，在定义 Schema 的时候，允许用户自定义字段的校验规则。当在 Schema 中定义校验规则的时候，需要遵守下列规则：</p>
+<ul>
+<li>校验规则需要在 Schema 中定义。</li>
+<li>校验会在 <code>save</code> 操作前调用。</li>
+<li>可以通过 <code>doc.validate(callback)</code> 和 <code>doc.validateSync()</code> 手动校验。</li>
+<li>未定义校验规则的字段将不会校验，除非是 <code>required</code> 必要字段。</li>
+<li>校验时异步递归的，当使用 <code>Model.save</code> 时，子文档的校验规则将会立即调用，有错误时，执行的 <code>Model.save</code> 会接收到错误。</li>
+<li><p>校验时自定义的。<br>普通的校验定义：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> personSchema = <span class="keyword">new</span> Schema(&#123;</div><div class="line"><span class="attr">name</span>:&#123;</div><div class="line">    <span class="attr">type</span>: <span class="built_in">String</span>,</div><div class="line">    <span class="attr">validate</span>:&#123;</div><div class="line">        <span class="attr">validator</span>: <span class="function"><span class="keyword">function</span>(<span class="params">value</span>)</span>&#123;</div><div class="line">            <span class="comment">//只能以字母开头，只能包含英文数字下划线。</span></div><div class="line">            <span class="keyword">return</span> <span class="regexp">/^[a-zA-Z][a-zA-Z0-9_]*$/</span>.test(value);</div><div class="line">        &#125;,</div><div class="line">        <span class="attr">message</span>: <span class="string">'&#123;VALUE&#125; is not a valid username. It must begin with a letter.'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">required</span>: [<span class="literal">true</span>, <span class="string">'Username is required'</span>]</div><div class="line">&#125;,</div><div class="line"><span class="attr">phone</span>: &#123;</div><div class="line">    <span class="attr">type</span>: <span class="built_in">String</span>,</div><div class="line">    <span class="attr">validate</span>: &#123;</div><div class="line">    <span class="attr">validator</span>: <span class="function"><span class="keyword">function</span>(<span class="params">v</span>) </span>&#123;</div><div class="line">        <span class="comment">//11位电话号码</span></div><div class="line">        <span class="keyword">return</span> <span class="regexp">/\d&#123;11&#125;/</span>.test(v);</div><div class="line">        &#125;,</div><div class="line">        <span class="attr">message</span>: <span class="string">'&#123;VALUE&#125; is not a valid phone number!'</span></div><div class="line">    &#125;,</div><div class="line">    <span class="attr">required</span>: [<span class="literal">true</span>, <span class="string">'User phone number required'</span>]</div><div class="line">&#125;,</div><div class="line"><span class="attr">gender</span>:&#123;</div><div class="line">    <span class="attr">type</span>: <span class="built_in">String</span>,</div><div class="line">    <span class="attr">enum</span>: &#123;</div><div class="line">        <span class="comment">//只能是男女</span></div><div class="line">        values: [<span class="string">'female'</span>, <span class="string">'male'</span>],</div><div class="line">        <span class="attr">message</span>: <span class="string">'&#123;VALUE&#125; is not a valid gender'</span></div><div class="line">    &#125;,s</div><div class="line">&#125;</div><div class="line">&#125;,&#123;<span class="attr">collection</span>: <span class="string">'person'</span>&#125;)</div><div class="line"><span class="keyword">var</span> Person = mongoose.model(<span class="string">'Person'</span>, personSchema);</div><div class="line"><span class="comment">//测试数据</span></div><div class="line"><span class="keyword">var</span> one = <span class="keyword">new</span> Person(&#123;</div><div class="line">    <span class="attr">name</span>: <span class="string">'123'</span>,</div><div class="line">    <span class="attr">phone</span>:<span class="string">'11111'</span>,</div><div class="line">    <span class="attr">gender</span>:<span class="string">' male'</span></div><div class="line">&#125;)</div></pre></td></tr></table></figure>
+<p>我们使用 <code>one.validateSync()</code> 对数据进行验证，其验证结果如下：<br><img src="mongoose-guide/validate-result.png" alt=""><br>Mongoose 中内置的验证如下：</p>
+<blockquote>
+<ul>
+<li>所有的 Schema 都有 required 校验规则，必要校验器会调用 Schema 的 chenckRequired() 函数去校验该字段的值是否符合规则。</li>
+<li>Number 类型有 min 和 max。</li>
+<li>String 类型有 enum, minlength, maxlength, match的校验器。</li>
+</ul>
+</blockquote>
+</li>
+<li><p><code>required</code>：必填校验。<br>可以传入的参数为：<code>boolean[，String]</code>。当只传 <code>true</code> 或者 <code>false</code> 时，用于定义该字段是否为必填；当传入第二个参数 String 时，该信息作为校验失败的错误提示语。</p>
+</li>
+<li><code>enum</code>：枚举类型校验。<br>  接受参数类型为：<code>Array/ Object</code>。当类型为 <code>Array</code> 时，指定该字段的值必须在该数组中；当传入类型为 <code>Object</code> 时，可以定义两个键值队：<code>values</code> 和 <code>message</code>，<code>values</code> 的类型为 Array，指定字段的值必须在数组 <code>values</code> 中，<code>message</code> 指定校验失败的错误提示语。</li>
+<li><code>validator</code>：校验的对象。<br>  该对象包含 2 个键值队：<ul>
+<li><code>validate</code> 可以是正则表达式，也可以是一个函数。</li>
+<li><code>message</code> 则是错误信息提示语。</li>
+</ul>
+</li>
+<li><code>min ,max</code>：对数字类型的进行大小校验。第二个参数可以为字符串，作为错误提示语。</li>
+<li><code>minlength</code> ,<code>maxlength</code>：对字符串类型的进行长度校验。第二个参数可以为字符串，作为错误提示语。</li>
+<li><code>match</code>：接受一个正则表达式进行验证。第二个参数可以为字符串，作为错误提示语。</li>
+<li><code>trim</code>：字符串在校验时，是否去除前后字符串。默认为 <code>false</code>。</li>
+</ul>
+</li>
+</ol>
+<p>使用 Mongoose 的自动校验功能，可以省下许多校验操作。</p>
+<p>以前，我们直接使用 Mongodb 去操作数据，每次读取操作都要打开，关闭数据库，但是当网页刷新/访问过于频繁时，就会出现数据库来不及关闭，又开始新的查询，就可能会出现 error。</p>
+<p>现在，我们使用 Mongoose，打开数据库的连接之后，db 就会一直处于连接状态，不需要在访问时才打开连接，操作完后关闭连接，Error 也不再出现了。而且，代码的易读性也提高了不少。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nodejs/" rel="tag"># nodejs</a>
+          
+            <a href="/tags/mongodb/" rel="tag"># mongodb</a>
+          
+            <a href="/tags/javascript/" rel="tag"># javascript</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/08/05/without-jquery-lazyload-js/" rel="next" title="Without jQuery:lazyload.js">
+                <i class="fa fa-chevron-left"></i> Without jQuery:lazyload.js
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/10/16/vue-cli-demo/" rel="prev" title="使用Vue1.0 + webpack 实现SPA">
+                使用Vue1.0 + webpack 实现SPA <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="梁生、" />
+          <p class="site-author-name" itemprop="name">梁生、</p>
+           
+              <p class="site-description motion-element" itemprop="description">《JavaScript - 入门到放弃》</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是-MongoDb-和-Mongoose"><span class="nav-number">1.</span> <span class="nav-text">什么是 MongoDb 和 Mongoose</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么使用-Mongoose"><span class="nav-number">2.</span> <span class="nav-text">为什么使用 Mongoose</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装和使用-Mongoose"><span class="nav-number">3.</span> <span class="nav-text">安装和使用 Mongoose</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-JZ · Leung"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">梁生、</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

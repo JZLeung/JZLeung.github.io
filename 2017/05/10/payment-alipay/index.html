@@ -1,0 +1,818 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="支付,支付宝,alipay," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="前端·禁地" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="主要针对在APP应用和网页版的支付功能（支付宝，微信，银联）开发时，所遇到的坑。能填则填。">
+<meta name="keywords" content="支付,支付宝,alipay">
+<meta property="og:type" content="article">
+<meta property="og:title" content="支付开发填坑记之支付宝">
+<meta property="og:url" content="http://blog.leungjz.top/2017/05/10/payment-alipay/index.html">
+<meta property="og:site_name" content="前端·禁地">
+<meta property="og:description" content="主要针对在APP应用和网页版的支付功能（支付宝，微信，银联）开发时，所遇到的坑。能填则填。">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/alipay-app-1.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/alipay-app-2.png">
+<meta property="og:image" content="http://ojrkbauy9.bkt.clouddn.com/alipay-web-1.png">
+<meta property="og:updated_time" content="2017-06-29T12:45:49.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="支付开发填坑记之支付宝">
+<meta name="twitter:description" content="主要针对在APP应用和网页版的支付功能（支付宝，微信，银联）开发时，所遇到的坑。能填则填。">
+<meta name="twitter:image" content="http://ojrkbauy9.bkt.clouddn.com/alipay-app-1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://blog.leungjz.top/2017/05/10/payment-alipay/"/>
+
+
+
+
+
+  <title> 支付开发填坑记之支付宝 | 前端·禁地 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">前端·禁地</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-github">
+          <a href="https://github.com/JZLeung" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-github"></i> <br />
+            
+            GitHub
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://blog.leungjz.top/2017/05/10/payment-alipay/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="梁生、">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="前端·禁地">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                支付开发填坑记之支付宝
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-05-10T17:07:58+08:00">
+                2017-05-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>主要针对在APP应用和网页版的支付功能（支付宝，微信，银联）开发时，所遇到的坑。能填则填。<br><a id="more"></a></p>
+<p>支付宝在所有支付方式中最好开发的了，因为文档比较清晰，而且开发起来也比较简单。因此，支付宝的坑是相对较少的。</p>
+<h1 id="APP支付"><a href="#APP支付" class="headerlink" title="APP支付"></a>APP支付</h1><p>APP支付步骤为：</p>
+<ol>
+<li>获取支付宝的配置信息。</li>
+<li>生成商家订单信息。</li>
+<li>根据订单信息生成<strong>待校验数据</strong>。</li>
+<li>生成请求给支付宝的<strong>加密字符串</strong>。</li>
+<li>将待校验数据和加密字符串拼接，返回给APP。</li>
+<li>APP将得到的数据请求支付宝客户端进行支付。</li>
+</ol>
+<p>由于APP支付是由APP去调起支付宝支付，所以服务端需要做的事情就是将请求参数封装好之后返回APP即可。</p>
+<ol>
+<li>获取支付宝的配置信息。<br>支付时需要的配置信息有：<ul>
+<li>key： 交易安全校验码。</li>
+<li>app_id：支付宝分配给开发者的应用ID。</li>
+</ul>
+</li>
+<li>生成商家订单信息。<br>这个步骤由商家自行生成。支付宝那边只需要知道的订单信息为：<ul>
+<li>subject: 必填。商品的标题/交易标题/订单标题/订单关键字等。</li>
+<li>total_amount: 必填。订单价格。</li>
+<li>out_trade_no: 必填。商户网站唯一订单号。</li>
+<li>body: 非必填。交易的具体描述信息。</li>
+</ul>
+</li>
+<li>根据订单信息生成<strong>待校验数据</strong>。<br>APP支付的详细请求参数: <a href="https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.W1CdRr&amp;treeId=204&amp;articleId=105465&amp;docType=1" target="_blank" rel="external">点击查看</a><br><img src="http://ojrkbauy9.bkt.clouddn.com/alipay-app-1.png" alt="APP-支付宝"></li>
+<li><p>生成请求给支付宝的<strong>加密字符串</strong>。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$sign = $alipaySubmit-&gt;buildRequestParaForApp($para_token);</div></pre></td></tr></table></figure>
+<p>其中， <code>buildRequestParaForApp</code> 的实现为：</p>
+<ol>
+<li><p>对待签名参数数组排序</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 对数组排序</div><div class="line"> * <span class="doctag">@param</span> $para 排序前的数组</div><div class="line"> * return 排序后的数组</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">argSort</span><span class="params">($para)</span> </span>&#123;</div><div class="line">    ksort($para);</div><div class="line">    reset($para);</div><div class="line">    <span class="keyword">return</span> $para;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>生成签名结果（阿里推荐的是RSA2的签名方式，这里项目用的是RSA）</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * RSA签名</div><div class="line"> * <span class="doctag">@param</span> $data 待签名数据</div><div class="line"> * <span class="doctag">@param</span> $private_key_path 商户私钥文件路径</div><div class="line"> * return 签名结果</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">rsaSign</span><span class="params">($data, $private_key_path)</span> </span>&#123;</div><div class="line">    $priKey = file_get_contents($private_key_path);</div><div class="line">    $res = openssl_get_privatekey($priKey);</div><div class="line">    openssl_sign($data, $sign, $res);</div><div class="line">    openssl_free_key($res);</div><div class="line">    <span class="comment">//base64编码</span></div><div class="line">    $sign = base64_encode($sign);</div><div class="line">    <span class="keyword">return</span> $sign;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+</ol>
+<ol>
+<li><p>将待校验数据和加密字符串拼接，返回给APP。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$url = <span class="string">""</span>;</div><div class="line"><span class="keyword">foreach</span> ($para_token <span class="keyword">as</span> $key =&gt; $value) &#123;</div><div class="line">    $url .= $key.<span class="string">"="</span>.urlencode($value).<span class="string">"&amp;"</span>;</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> $url.<span class="string">"sign="</span>.urlencode($sign);</div></pre></td></tr></table></figure>
+</li>
+<li><p>APP将得到的数据请求支付宝客户端进行支付。<br>APP端将拼接好的字符串拿去请求支付宝客户端即可调起支付宝进行支付。拼接好的字符串大致如下图所示：<br><img src="http://ojrkbauy9.bkt.clouddn.com/alipay-app-2.png" alt="APP-支付宝-APP"></p>
+</li>
+</ol>
+<h1 id="网页版支付"><a href="#网页版支付" class="headerlink" title="网页版支付"></a>网页版支付</h1><p>网页版支付步骤为：</p>
+<ol>
+<li>设置支付宝的配置信息。</li>
+<li>向支付宝申请新订单，获取支付token。</li>
+<li>携带token进行订单支付。</li>
+</ol>
+<p>网页版的支付宝支付相对于APP调起支付宝要复杂，因为网页支付时，需要多次请求支付宝服务器获取支付的必要参数。</p>
+<ol>
+<li><p>设置支付宝配置信息。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**调用授权接口alipay.wap.trade.create.direct获取授权码token**/</span></div><div class="line">        </div><div class="line">    <span class="comment">//返回格式</span></div><div class="line">    <span class="keyword">private</span>  $format = <span class="string">""</span>;</div><div class="line">    <span class="comment">//必填，不需要修改</span></div><div class="line">    </div><div class="line">    <span class="comment">//版本</span></div><div class="line">    <span class="keyword">private</span> $v = <span class="string">""</span>;</div><div class="line">    <span class="comment">//必填，不需要修改</span></div><div class="line">    </div><div class="line">    <span class="comment">//请求号</span></div><div class="line">    <span class="keyword">private</span> $req_id = <span class="string">""</span>;</div><div class="line">    <span class="comment">//必填，须保证每次请求都是唯一</span></div><div class="line">    </div><div class="line">    <span class="comment">//**req_data详细信息**</span></div><div class="line">    </div><div class="line">    <span class="comment">//服务器异步通知页面路径</span></div><div class="line">    <span class="keyword">private</span> $notify_url = <span class="string">""</span>;</div><div class="line">    <span class="comment">//需http://格式的完整路径，不允许加?id=123这类自定义参数</span></div><div class="line">    </div><div class="line">    <span class="comment">//页面跳转同步通知页面路径</span></div><div class="line">    <span class="keyword">private</span> $call_back_url = <span class="string">""</span>;</div><div class="line">    <span class="comment">//需http://格式的完整路径，不允许加?id=123这类自定义参数</span></div><div class="line">    </div><div class="line">    <span class="comment">//卖家支付宝账户</span></div><div class="line">    <span class="keyword">private</span> $seller_email = <span class="string">""</span>;</div><div class="line">    <span class="comment">//必填</span></div><div class="line">    </div><div class="line">    <span class="comment">//商户订单号</span></div><div class="line">    <span class="keyword">private</span> $out_trade_no = <span class="string">""</span>;</div><div class="line">    <span class="comment">//商户网站订单系统中唯一订单号，必填</span></div><div class="line">    </div><div class="line">    <span class="comment">//订单名称</span></div><div class="line">    <span class="keyword">private</span> $subject = <span class="string">""</span>;</div><div class="line">    <span class="comment">//必填</span></div><div class="line">    </div><div class="line">    <span class="comment">//付款金额</span></div><div class="line">    <span class="keyword">private</span> $total_fee = <span class="string">""</span>;</div><div class="line">    <span class="comment">//必填</span></div><div class="line">    </div><div class="line">    <span class="comment">//请求业务参数详细</span></div><div class="line">    <span class="keyword">private</span> $req_data = <span class="string">""</span>;</div><div class="line">    <span class="comment">//必填</span></div><div class="line">    </div><div class="line">    <span class="comment">//配置</span></div><div class="line">    <span class="keyword">private</span> $alipay_config = <span class="keyword">array</span>();</div><div class="line">    </div><div class="line"><span class="comment">/************************************************************/</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>向支付宝申请新订单，并获取订单的token。<br><img src="http://ojrkbauy9.bkt.clouddn.com/alipay-web-1.png" alt="请求订单token需要的req_data"></p>
+<p>请求token的service为： <code>alipay.wap.trade.create.direct</code>。</p>
+<ol>
+<li><p>构造参数：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">$para_token = <span class="keyword">array</span>(</div><div class="line">    <span class="string">"service"</span> =&gt; <span class="string">"alipay.wap.trade.create.direct"</span>,</div><div class="line">    <span class="comment">//  合作者身份(partner ID)</span></div><div class="line">    <span class="string">"partner"</span> =&gt; trim(<span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'partner'</span>]),</div><div class="line">    <span class="comment">//  APP使用的是RSA，网页版使用的是MD5</span></div><div class="line">    <span class="string">"sec_id"</span> =&gt; trim(<span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'sign_type'</span>]),</div><div class="line">    <span class="comment">//  返回的数据格式</span></div><div class="line">    <span class="string">"format"</span>    =&gt; <span class="keyword">$this</span>-&gt;format,</div><div class="line">    <span class="comment">//  版本号？</span></div><div class="line">    <span class="string">"v"</span> =&gt; <span class="keyword">$this</span>-&gt;v,</div><div class="line">    <span class="comment">//  唯一的请求号</span></div><div class="line">    <span class="string">"req_id"</span>    =&gt; <span class="keyword">$this</span>-&gt;req_id,</div><div class="line">    <span class="comment">//  请求参数</span></div><div class="line">    <span class="string">"req_data"</span>  =&gt; $req_data,</div><div class="line">    <span class="comment">//  字符集，一般为utf8即可。</span></div><div class="line">    <span class="string">"_input_charset"</span>    =&gt; trim(strtolower(<span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'input_charset'</span>]))</div><div class="line">);</div></pre></td></tr></table></figure>
+</li>
+<li><p>将构造好的请求参数，进行处理，字典排序，拼接字符串，签名：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">$para_filter = paraFilter($para_temp);</div><div class="line">$para_sort = argSort($para_filter);</div><div class="line">$mysign = <span class="keyword">$this</span>-&gt;buildRequestMysign($para_sort);</div><div class="line"><span class="comment">//签名结果与签名方式加入请求提交参数组中</span></div><div class="line">$para_sort[<span class="string">'sign'</span>] = $mysign;</div><div class="line"><span class="keyword">return</span> $para_sort;</div></pre></td></tr></table></figure>
+<p>处理：过滤值为空的数据，过滤签名类型和签名。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">paraFilter</span><span class="params">($para)</span> </span>&#123;</div><div class="line">    $para_filter = <span class="keyword">array</span>();</div><div class="line">    <span class="keyword">while</span> (<span class="keyword">list</span> ($key, $val) = each ($para)) &#123;</div><div class="line">        <span class="keyword">if</span>($key == <span class="string">"sign"</span> || $key == <span class="string">"sign_type"</span> || $val == <span class="string">""</span>)<span class="keyword">continue</span>;</div><div class="line">        <span class="keyword">else</span>    $para_filter[$key] = $para[$key];</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">return</span> $para_filter;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>字典排序：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 对数组排序</div><div class="line"> * <span class="doctag">@param</span> $para 排序前的数组</div><div class="line"> * return 排序后的数组</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">argSort</span><span class="params">($para)</span> </span>&#123;</div><div class="line">    ksort($para);</div><div class="line">    reset($para);</div><div class="line">    <span class="keyword">return</span> $para;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>签名：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 生成签名结果</div><div class="line"> * <span class="doctag">@param</span> $para_sort 已排序要签名的数组</div><div class="line"> * return 签名结果字符串</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">buildRequestMysign</span><span class="params">($para_sort)</span> </span>&#123;</div><div class="line">    <span class="comment">//把数组所有元素，按照“参数=参数值”的模式用“&amp;”字符拼接成字符串</span></div><div class="line">    $prestr = createLinkstring($para_sort);</div><div class="line">    $mysign = <span class="string">""</span>;</div><div class="line">    <span class="keyword">switch</span> (strtoupper(trim(<span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'sign_type'</span>]))) &#123;</div><div class="line">        <span class="keyword">case</span> <span class="string">"MD5"</span> :</div><div class="line">            <span class="comment">//  MD5直接将密钥拼接在字符串后面再进行MD5加密。</span></div><div class="line">            $mysign = md5Sign($prestr, <span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'key'</span>]);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">"RSA"</span> :</div><div class="line">            <span class="comment">//  RSA则是先读取商户的私钥，再用该密钥对字符串进行加密。</span></div><div class="line">            $mysign = rsaSign($prestr, <span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'private_key_path'</span>]);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">"0001"</span> :</div><div class="line">            $mysign = rsaSign($prestr, <span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'private_key_path'</span>]);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span> :</div><div class="line">            $mysign = <span class="string">""</span>;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> $mysign;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>用构造好的参数请求支付宝后台申请新订单：</p>
+<p><strong>注意：请求时，必须带上SSL证书。</strong></p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$sResult = getHttpResponsePOST(<span class="keyword">$this</span>-&gt;alipay_gateway_new, <span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'cacert'</span>],$request_data,trim(strtolower(<span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'input_charset'</span>])));</div></pre></td></tr></table></figure>
+<p>请求函数的实现：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 远程获取数据，POST模式</div><div class="line"> * 注意：</div><div class="line"> * 1.使用Crul需要修改服务器中php.ini文件的设置，找到php_curl.dll去掉前面的";"就行了</div><div class="line"> * 2.文件夹中cacert.pem是SSL证书请保证其路径有效，目前默认路径是：getcwd().'\\cacert.pem'</div><div class="line"> * <span class="doctag">@param</span> $url 指定URL完整路径地址</div><div class="line"> * <span class="doctag">@param</span> $cacert_url 指定当前工作目录绝对路径</div><div class="line"> * <span class="doctag">@param</span> $para 请求的数据</div><div class="line"> * <span class="doctag">@param</span> $input_charset 编码格式。默认值：空值</div><div class="line"> * return 远程输出的数据</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getHttpResponsePOST</span><span class="params">($url, $cacert_url, $para, $input_charset = <span class="string">''</span>)</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (trim($input_charset) != <span class="string">''</span>) &#123;</div><div class="line">        $url = $url.<span class="string">"_input_charset="</span>.$input_charset;</div><div class="line">    &#125;</div><div class="line">    $curl = curl_init($url);</div><div class="line">    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, <span class="keyword">true</span>);<span class="comment">//SSL证书认证</span></div><div class="line">    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, <span class="number">2</span>);<span class="comment">//严格认证</span></div><div class="line">    curl_setopt($curl, CURLOPT_CAINFO,$cacert_url);<span class="comment">//证书地址</span></div><div class="line">    curl_setopt($curl, CURLOPT_HEADER, <span class="number">0</span> ); <span class="comment">// 过滤HTTP头</span></div><div class="line">    curl_setopt($curl,CURLOPT_RETURNTRANSFER, <span class="number">1</span>);<span class="comment">// 显示输出结果</span></div><div class="line">    curl_setopt($curl,CURLOPT_POST,<span class="keyword">true</span>); <span class="comment">// post传输数据</span></div><div class="line">    curl_setopt($curl,CURLOPT_POSTFIELDS,$para);<span class="comment">// post传输数据</span></div><div class="line">    $responseText = curl_exec($curl);</div><div class="line">    <span class="comment">//var_dump( curl_error($curl) );//如果执行curl过程中出现异常，可打开此开关，以便查看异常内容</span></div><div class="line">    curl_close($curl);</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> $responseText;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>处理支付宝返回的数据，并获取token。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//URLDECODE返回的信息</span></div><div class="line">$html_text = urldecode($html_text);</div><div class="line"><span class="comment">//解析远程模拟提交后返回的信息</span></div><div class="line">$para_html_text = parseResponse($html_text);</div><div class="line"><span class="comment">//获取request_token</span></div><div class="line">$request_token = $para_html_text[<span class="string">'request_token'</span>];</div></pre></td></tr></table></figure>
+<p>parseResponse函数的实现：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * 解析远程模拟提交后返回的信息</div><div class="line"> * <span class="doctag">@param</span> $str_text 要解析的字符串</div><div class="line"> * <span class="doctag">@return</span> 解析结果</div><div class="line"> */</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">parseResponse</span><span class="params">($str_text)</span> </span>&#123;</div><div class="line">    <span class="comment">//以“&amp;”字符切割字符串</span></div><div class="line">    $para_split = explode(<span class="string">'&amp;'</span>,$str_text);</div><div class="line">    <span class="comment">//把切割后的字符串数组变成变量与数值组合的数组</span></div><div class="line">    <span class="keyword">foreach</span> ($para_split <span class="keyword">as</span> $item) &#123;</div><div class="line">        <span class="comment">//获得第一个=字符的位置</span></div><div class="line">        $nPos = strpos($item,<span class="string">'='</span>);</div><div class="line">        <span class="comment">//获得字符串长度</span></div><div class="line">        $nLen = strlen($item);</div><div class="line">        <span class="comment">//获得变量名</span></div><div class="line">        $key = substr($item,<span class="number">0</span>,$nPos);</div><div class="line">        <span class="comment">//获得数值</span></div><div class="line">        $value = substr($item,$nPos+<span class="number">1</span>,$nLen-$nPos<span class="number">-1</span>);</div><div class="line">        <span class="comment">//放入数组中</span></div><div class="line">        $para_text[$key] = $value;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">if</span>( ! <span class="keyword">empty</span> ($para_text[<span class="string">'res_data'</span>])) &#123;</div><div class="line">        <span class="comment">//解析加密部分字符串</span></div><div class="line">        <span class="keyword">if</span>(<span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'sign_type'</span>] == <span class="string">'0001'</span>) &#123;</div><div class="line">            $para_text[<span class="string">'res_data'</span>] = rsaDecrypt($para_text[<span class="string">'res_data'</span>], <span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'private_key_path'</span>]);</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        <span class="comment">//token从res_data中解析出来（也就是说res_data中已经包含token的内容）</span></div><div class="line">        $doc = <span class="keyword">new</span> DOMDocument();</div><div class="line">        $doc-&gt;loadXML($para_text[<span class="string">'res_data'</span>]);</div><div class="line">        $para_text[<span class="string">'request_token'</span>] = $doc-&gt;getElementsByTagName( <span class="string">"request_token"</span> )-&gt;item(<span class="number">0</span>)-&gt;nodeValue;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> $para_text;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ol>
+</li>
+<li><p>携带token进行订单支付。</p>
+<p>成功请求token回来后，就可以向支付宝发出一次支付请求。</p>
+<p>同样构造请求数据：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//业务详细只需要携带步骤2的token即可。</span></div><div class="line">$req_data = <span class="string">'&lt;auth_and_execute_req&gt;&lt;request_token&gt;'</span> . $request_token . <span class="string">'&lt;/request_token&gt;&lt;/auth_and_execute_req&gt;'</span>;</div><div class="line"><span class="comment">//必填</span></div><div class="line"></div><div class="line"><span class="comment">//构造要请求的参数数组，无需改动</span></div><div class="line">$parameter = <span class="keyword">array</span>(</div><div class="line">    <span class="string">"service"</span> =&gt; <span class="string">"alipay.wap.auth.authAndExecute"</span>,</div><div class="line">    <span class="comment">//  合作者身份(partner ID)</span></div><div class="line">    <span class="string">"partner"</span> =&gt; trim(<span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'partner'</span>]),</div><div class="line">    <span class="comment">//  签名类型</span></div><div class="line">    <span class="string">"sec_id"</span> =&gt; trim(<span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'sign_type'</span>]),</div><div class="line">    <span class="comment">//  和步骤2一致</span></div><div class="line">    <span class="string">"format"</span>    =&gt; <span class="keyword">$this</span>-&gt;format,</div><div class="line">    <span class="string">"v"</span> =&gt; <span class="keyword">$this</span>-&gt;v,</div><div class="line">    <span class="string">"req_id"</span>    =&gt; <span class="keyword">$this</span>-&gt;req_id,</div><div class="line">    <span class="comment">//  业务详细参数</span></div><div class="line">    <span class="string">"req_data"</span>  =&gt; $req_data,</div><div class="line">    <span class="comment">//  字符集，一般为utf8.</span></div><div class="line">    <span class="string">"_input_charset"</span>    =&gt; trim(strtolower(<span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'input_charset'</span>]))</div><div class="line">);</div></pre></td></tr></table></figure>
+<p>将这些参数，在页面中传送给支付宝即可发起一次支付请求。</p>
+<p>在PHP 中的实现就是将这些参数，渲染至HTML中，再将HTML中的表单提交即可。</p>
+<p>到此，网页版的支付宝支付完成整个流程。</p>
+</li>
+</ol>
+<h1 id="支付结果异步通知"><a href="#支付结果异步通知" class="headerlink" title="支付结果异步通知"></a>支付结果异步通知</h1><p>在上面，我们看到有两个参数传给了支付宝：</p>
+<ul>
+<li><code>call_back_url</code>: 交易成功后，支付宝页面上“返回到商家页面”的地址（同步回调）</li>
+<li><code>notify_url</code>: 交易状态变更后，支付宝通知网站的回调地址（异步通知）</li>
+</ul>
+<blockquote>
+<p>对于手机网站支付产生的交易，支付宝会根据原始支付API中传入的异步通知地址notify_url，通过POST请求的形式将支付结果作为参数通知到商户系统。</p>
+<p>对于App支付产生的交易，支付宝会根据原始支付API中传入的异步通知地址notify_url，通过POST请求的形式将支付结果作为参数通知到商户系统。</p>
+</blockquote>
+<p><a href="https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.kuchJN&amp;treeId=204&amp;articleId=105301&amp;docType=1" target="_blank" rel="external">支付宝异步通知官方文档</a>中写的比较清楚，什么时候出发通知，返回什么参数，注意事项都有，开发者可以根据自己的情况查看具体信息。</p>
+<p>验签步骤可以移步至<a href="https://doc.open.alipay.com/docs/doc.htm?spm=a219a.7629140.0.0.kuchJN&amp;treeId=204&amp;articleId=105301&amp;docType=1#s7" target="_blank" rel="external">这里</a></p>
+<p>这里就简单的用手上的项目举例说明，支付宝通知后，后台是如何进行验签和处理订单。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">app_notifyOp</span><span class="params">()</span></span>&#123;</div><div class="line">    $payment_api = <span class="keyword">$this</span>-&gt;_get_payment_api();</div><div class="line">    $payment_config = <span class="keyword">$this</span>-&gt;_get_payment_config();</div><div class="line">    <span class="comment">// 支付宝是用POST方式发送通知信息</span></div><div class="line">    $callback_info = $payment_api-&gt;getNotifyInfoApp($_POST);</div><div class="line">    <span class="keyword">if</span>($callback_info) &#123;</div><div class="line">        <span class="comment">//验证成功</span></div><div class="line">        <span class="keyword">if</span> ($callback_info[<span class="string">'order_state'</span>]) &#123;</div><div class="line">            <span class="comment">// 如果是支付成功则改变订单状态</span></div><div class="line">            $result = <span class="keyword">$this</span>-&gt;_update_order($callback_info[<span class="string">'out_trade_no'</span>], $callback_info[<span class="string">'trade_no'</span>]);</div><div class="line">        &#125;<span class="keyword">else</span>&#123;</div><div class="line">            <span class="comment">// 如果是退款成功则修改退订的相关状态</span></div><div class="line">            $result = <span class="keyword">$this</span>-&gt;_app_refund($callback_info[<span class="string">'out_trade_no'</span>], $callback_info[<span class="string">'trade_no'</span>], $callback_info[<span class="string">'refund_fee'</span>]);</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">if</span>($result[<span class="string">'state'</span>]) &#123;</div><div class="line">            <span class="keyword">echo</span> <span class="string">'success'</span>;<span class="keyword">die</span>;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//验证失败</span></div><div class="line">    <span class="keyword">echo</span> <span class="string">"fail"</span>;<span class="keyword">die</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<ol>
+<li><p>获取支付宝通知数据<br>支付宝异步通知是<em>POST</em>请求，返回的数据结构如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="attr">"total_amount"</span>: <span class="string">"31.00"</span>,</div><div class="line">    <span class="attr">"buyer_id"</span>: <span class="string">"ID"</span>,</div><div class="line">    <span class="attr">"trade_no"</span>: <span class="string">"TRADE_NO"</span>,</div><div class="line">    <span class="attr">"body"</span>: <span class="string">"pay_sn:580546601841783375"</span>,</div><div class="line">    <span class="attr">"notify_time"</span>: <span class="string">"2017-04-27 09:50:59"</span>,</div><div class="line">    <span class="attr">"subject"</span>: <span class="string">"580546601841783375"</span>,</div><div class="line">    <span class="attr">"sign_type"</span>: <span class="string">"RSA"</span>,</div><div class="line">    <span class="attr">"buyer_logon_id"</span>: <span class="string">"ID"</span>,</div><div class="line">    <span class="attr">"auth_app_id"</span>: <span class="string">"APPID"</span>,</div><div class="line">    <span class="attr">"charset"</span>: <span class="string">"utf-8"</span>,</div><div class="line">    <span class="attr">"notify_type"</span>: <span class="string">"trade_status_sync"</span>,</div><div class="line">    <span class="attr">"invoice_amount"</span>: <span class="string">"31.00"</span>,</div><div class="line">    <span class="attr">"out_trade_no"</span>: <span class="string">"580546601841783375_r"</span>,</div><div class="line">    <span class="attr">"trade_status"</span>: <span class="string">"TRADE_SUCCESS"</span>,</div><div class="line">    <span class="attr">"gmt_payment"</span>: <span class="string">"2017-04-27 09:50:58"</span>,</div><div class="line">    <span class="attr">"version"</span>: <span class="string">"1.0"</span>,</div><div class="line">    <span class="attr">"point_amount"</span>: <span class="string">"0.00"</span>,</div><div class="line">    <span class="attr">"sign"</span>: <span class="string">"SIGNATURE"</span>,</div><div class="line">    <span class="attr">"gmt_create"</span>: <span class="string">"2017-04-27 09:50:58"</span>,</div><div class="line">    <span class="attr">"buyer_pay_amount"</span>: <span class="string">"31.00"</span>,</div><div class="line">    <span class="attr">"receipt_amount"</span>: <span class="string">"31.00"</span>,</div><div class="line">    <span class="attr">"fund_bill_list"</span>: <span class="string">"[&#123;&amp;quot;amount&amp;quot;:&amp;quot;31.00&amp;quot;,&amp;quot;fundChannel&amp;quot;:&amp;quot;ALIPAYACCOUNT&amp;quot;&#125;]"</span>,</div><div class="line">    <span class="attr">"app_id"</span>: <span class="string">"APPID"</span>,</div><div class="line">    <span class="attr">"seller_id"</span>: <span class="string">"SELLERID"</span>,</div><div class="line">    <span class="attr">"notify_id"</span>: <span class="string">"8414394a1190f25edbbec9ba4b98642mem"</span>,</div><div class="line">    <span class="attr">"seller_email"</span>: <span class="string">"YOUR_ALIPAY_ACCOUNT"</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>验签数据<br><strong>验签需要支付宝的公钥</strong></p>
+<p>验签和签名的流程是一样的，都是将所有除了 <code>sign</code> 以外的参数，进行字典排序，并以 <code>key=value</code> 的形式以 <code>&amp;</code> 符号拼成字符串，再使用密钥进行签名，将得到的签名与支付宝返回的签名进行对比，完成验签过程。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">getSignVeryfy</span><span class="params">($para_temp, $sign)</span> </span>&#123;</div><div class="line">    <span class="comment">//除去待签名参数数组中的空值和签名参数</span></div><div class="line">    $para = paraFilter($para_temp);</div><div class="line">    </div><div class="line">    <span class="comment">//对待签名参数数组排序</span></div><div class="line">    $para = argSort($para);</div><div class="line"></div><div class="line">    <span class="comment">//把数组所有元素，按照“参数=参数值”的模式用“&amp;”字符拼接成字符串</span></div><div class="line">    $prestr = createLinkstring($para);</div><div class="line">    $prestr = htmlspecialchars_decode($prestr);</div><div class="line">    $isSgin = <span class="keyword">false</span>;</div><div class="line">    <span class="keyword">switch</span> (strtoupper(trim(<span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'sign_type'</span>]))) &#123;</div><div class="line">        <span class="keyword">case</span> <span class="string">"MD5"</span> :</div><div class="line">            $isSgin = md5Verify($prestr, $sign, <span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'key'</span>]);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">"RSA"</span> :</div><div class="line">            $isSgin = rsaVerify($prestr, trim(<span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'ali_public_key_path'</span>]), $sign);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">case</span> <span class="string">"0001"</span> :</div><div class="line">            $isSgin = rsaVerify($prestr, trim(<span class="keyword">$this</span>-&gt;alipay_config[<span class="string">'ali_public_key_path'</span>]), $sign);</div><div class="line">            <span class="keyword">break</span>;</div><div class="line">        <span class="keyword">default</span> :</div><div class="line">            $isSgin = <span class="keyword">false</span>;</div><div class="line">    &#125;</div><div class="line">    logResult($log);</div><div class="line">    </div><div class="line">    <span class="keyword">return</span> $isSgin;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>但是这里有个坑，就是返回数据中的 <code>fund_bill_list</code> 是经过html转义的（如例子中的数据： <code>[{&amp;quot;amount&amp;quot;:&amp;quot;31.00&amp;quot;,&amp;quot;fundChannel&amp;quot;:&amp;quot;ALIPAYACCOUNT&amp;quot;}]</code>），如果直接使用该参数进行签名，则会导致签名失败。这里就需要将字符串转义了： <code>[{&quot;amount&quot;:&quot;31.00&quot;,&quot;fundChannel&quot;:&quot;ALIPAYACCOUNT&quot;}]</code> ，用转义后的参数值进行签名，通过校验。</p>
+</li>
+<li><p>更改订单状态<br>验签完毕后，后台就可以根据实际情况进行订单状态的更改。</p>
+</li>
+</ol>
+<h1 id="完毕"><a href="#完毕" class="headerlink" title="完毕"></a>完毕</h1><p>祝各位程序猿在开发支付宝支付时不再有坑，也希望支付宝在后续的更新中不再埋雷。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/支付/" rel="tag"># 支付</a>
+          
+            <a href="/tags/支付宝/" rel="tag"># 支付宝</a>
+          
+            <a href="/tags/alipay/" rel="tag"># alipay</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/04/08/payment-wxpay/" rel="next" title="支付开发填坑记之微信支付">
+                <i class="fa fa-chevron-left"></i> 支付开发填坑记之微信支付
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/06/09/fastdfs-nginx/" rel="prev" title="农民进城之初尝FastDFS搭建图片分布式系统">
+                农民进城之初尝FastDFS搭建图片分布式系统 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="梁生、" />
+          <p class="site-author-name" itemprop="name">梁生、</p>
+           
+              <p class="site-description motion-element" itemprop="description">《JavaScript - 入门到放弃》</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              
+                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-name">标签</span>
+              
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#APP支付"><span class="nav-number">1.</span> <span class="nav-text">APP支付</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#网页版支付"><span class="nav-number">2.</span> <span class="nav-text">网页版支付</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#支付结果异步通知"><span class="nav-number">3.</span> <span class="nav-text">支付结果异步通知</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#完毕"><span class="nav-number">4.</span> <span class="nav-text">完毕</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-JZ · Leung"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">梁生、</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
