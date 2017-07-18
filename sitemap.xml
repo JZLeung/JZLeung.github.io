@@ -23,20 +23,6 @@
   </url>
   
   <url>
-    <loc>http://blog.leungjz.top/2017/01/22/qiniu-js-upload/</loc>
-    
-    <lastmod>2017-06-29T12:45:49.000Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://blog.leungjz.top/2017/05/10/payment-alipay/</loc>
-    
-    <lastmod>2017-06-29T12:45:49.000Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://blog.leungjz.top/2017/04/08/payment-wxpay/</loc>
     
     <lastmod>2017-06-29T12:45:49.000Z</lastmod>
@@ -51,7 +37,14 @@
   </url>
   
   <url>
-    <loc>http://blog.leungjz.top/2016/07/23/without-jquery-event-js/</loc>
+    <loc>http://blog.leungjz.top/2017/05/10/payment-alipay/</loc>
+    
+    <lastmod>2017-06-29T12:45:49.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.leungjz.top/2017/01/22/qiniu-js-upload/</loc>
     
     <lastmod>2017-06-29T12:45:49.000Z</lastmod>
     
@@ -66,6 +59,13 @@
   
   <url>
     <loc>http://blog.leungjz.top/2016/08/05/without-jquery-lazyload-js/</loc>
+    
+    <lastmod>2017-06-29T12:45:49.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://blog.leungjz.top/2016/07/23/without-jquery-event-js/</loc>
     
     <lastmod>2017-06-29T12:45:49.000Z</lastmod>
     
